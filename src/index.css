@@ -1,0 +1,13 @@
+:root {
+  --primary-color: #1db954; /* Verde tipo Spotify */
+  --bg-dark: #121212;
+  --text-light: #ffffff;
+  --progress-bar-height: 5px;
+}
+
+.player-container {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  padding: 20px;
+  border-radius: 12px;
+}

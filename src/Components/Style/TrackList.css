@@ -1,0 +1,77 @@
+.tracklist-container {
+  margin-top: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 15px;
+  max-height: 200px; /* Limita el alto */
+  overflow-y: auto;  /* Scroll vertical si es necesario */
+}
+
+/* Personalización del scrollbar (estilo moderno) */
+.tracklist-container::-webkit-scrollbar {
+  width: 5px;
+}
+.tracklist-container::-webkit-scrollbar-thumb {
+  background: #6366f1;
+  border-radius: 10px;
+}
+
+.tracklist-title {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.tracklist-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-bottom: 5px;
+}
+
+.track-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.track-item.active {
+  background: rgba(99, 102, 241, 0.2);
+  border-left: 3px solid #6366f1;
+}
+
+.track-number {
+  color: #6366f1;
+  margin-right: 15px;
+  font-weight: bold;
+  width: 20px;
+}
+
+.track-details {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  flex-grow: 1;
+}
+
+.track-name-list {
+  color: #fff;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.track-author-list {
+  color: #64748b;
+  font-size: 0.7rem;
+}
