@@ -141,28 +141,7 @@ const Player = () => {
 
   useEffect(() => {
     const loadPlaylist = async () => {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-
-      try {
-        const res = await fetch('/api/playlist', { signal: controller.signal });
-        clearTimeout(timeout);
-        if (!res.ok) return;
-        const contentType = res.headers.get('content-type') || '';
-        if (!contentType.includes('application/json')) return;
-        const data = await res.json();
-        if (data.tracks && data.tracks.length > 0) {
-          setTracks(data.tracks);
-          localStorage.setItem('mp3_playlist', JSON.stringify(data.tracks));
-          setLoading(false);
-          isLoaded.current = true;
-          return;
-        }
-      } catch {
-        // API unavailable, try localStorage
-      } finally {
-        clearTimeout(timeout);
-      }
+      let loaded = false;
 
       try {
         const saved = localStorage.getItem('mp3_playlist');
@@ -170,10 +149,30 @@ const Player = () => {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
             setTracks(parsed);
+            loaded = true;
           }
         }
-      } catch {
-        // corrupted localStorage
+      } catch {}
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+
+      try {
+        const res = await fetch('/api/playlist', { signal: controller.signal });
+        clearTimeout(timeout);
+        if (res.ok) {
+          const contentType = res.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const data = await res.json();
+            if (data.tracks && data.tracks.length > 0) {
+              setTracks(data.tracks);
+              localStorage.setItem('mp3_playlist', JSON.stringify(data.tracks));
+              loaded = true;
+            }
+          }
+        }
+      } catch {} finally {
+        clearTimeout(timeout);
       }
 
       setLoading(false);
@@ -185,29 +184,17 @@ const Player = () => {
   useEffect(() => {
     if (!isLoaded.current) return;
 
-    try {
-      localStorage.setItem('mp3_playlist', JSON.stringify(tracks));
-    } catch {}
+    localStorage.setItem('mp3_playlist', JSON.stringify(tracks));
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+    const timeout = setTimeout(() => controller.abort(), 8000);
 
-    const savePlaylist = async () => {
-      try {
-        const tracksToSave = tracks.filter(t => !t.local);
-        await fetch('/api/playlist', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tracks: tracksToSave }),
-          signal: controller.signal,
-        });
-      } catch {
-        // API sync failed, localStorage already has it
-      } finally {
-        clearTimeout(timeout);
-      }
-    };
-    savePlaylist();
+    fetch('/api/playlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tracks: tracks.filter(t => !t.local) }),
+      signal: controller.signal,
+    }).catch(() => {}).finally(() => clearTimeout(timeout));
   }, [tracks]);
 
   const handleNewFiles = (newTracks) => {
@@ -247,6 +234,7 @@ const Player = () => {
         }).catch(() => {});
       }
     });
+    localStorage.removeItem('mp3_playlist');
     setTracks([]);
     setCurrentTrackIndex(0);
     setShowTracklist(false);
