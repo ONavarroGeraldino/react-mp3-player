@@ -109,8 +109,10 @@ const Player = () => {
   const [toast, setToast] = useState(null);
   const [showTracklist, setShowTracklist] = useState(false);
   const [style, setStyle] = useState(0);
+  const [loading, setLoading] = useState(true);
   const dragCounter = useRef(0);
   const toastTimer = useRef(null);
+  const isLoaded = useRef(false);
 
   const t = themes[style];
 
@@ -137,6 +139,41 @@ const Player = () => {
     toastTimer.current = setTimeout(() => setToast(null), 2500);
   }, []);
 
+  useEffect(() => {
+    const loadPlaylist = async () => {
+      try {
+        const res = await fetch('/api/playlist');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.tracks && data.tracks.length > 0) {
+          setTracks(data.tracks);
+        }
+      } catch {
+        // no saved playlist yet
+      } finally {
+        setLoading(false);
+        isLoaded.current = true;
+      }
+    };
+    loadPlaylist();
+  }, []);
+
+  useEffect(() => {
+    if (!isLoaded.current) return;
+    const savePlaylist = async () => {
+      try {
+        await fetch('/api/playlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tracks }),
+        });
+      } catch {
+        // silent fail
+      }
+    };
+    savePlaylist();
+  }, [tracks]);
+
   const handleNewFiles = (newTracks) => {
     setTracks(prevTracks => [...prevTracks, ...newTracks]);
     setShowTracklist(true);
@@ -154,10 +191,26 @@ const Player = () => {
     if (index < currentTrackIndex || (index === currentTrackIndex && tracks.length === 1)) {
       setCurrentTrackIndex(prev => (prev - 1 + tracks.length) % Math.max(tracks.length - 1, 1));
     }
+    if (removed.url) {
+      fetch('/api/playlist', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: removed.url }),
+      }).catch(() => {});
+    }
     showToast(`"${removed.name}" REMOVED`);
   };
 
   const handleClearAll = () => {
+    tracks.forEach(track => {
+      if (track.url) {
+        fetch('/api/playlist', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: track.url }),
+        }).catch(() => {});
+      }
+    });
     setTracks([]);
     setCurrentTrackIndex(0);
     setShowTracklist(false);
@@ -193,7 +246,7 @@ const Player = () => {
       }
     };
 
-    const handleDrop = (e) => {
+    const handleDrop = async (e) => {
       e.preventDefault();
       e.stopPropagation();
       dragCounter.current = 0;
@@ -203,12 +256,21 @@ const Player = () => {
       const audioFiles = files.filter(file => file.type.startsWith('audio/'));
 
       if (audioFiles.length > 0) {
-        const newTracks = audioFiles.map(file => ({
-          name: file.name.replace(/\.[^/.]+$/, ''),
-          url: URL.createObjectURL(file),
-          file: file,
-        }));
-        handleNewFiles(newTracks);
+        const newTracks = [];
+        for (const file of audioFiles) {
+          try {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            if (res.ok) {
+              const data = await res.json();
+              newTracks.push({ name: data.name, url: data.url, pathname: data.pathname });
+            }
+          } catch {}
+        }
+        if (newTracks.length > 0) {
+          handleNewFiles(newTracks);
+        }
       }
     };
 
@@ -256,6 +318,17 @@ const Player = () => {
       )}
 
       <div className={`${t.caseClass} w-full max-w-[400px] relative z-10 transition-all duration-500`}>
+        {loading && (
+          <div className="flex flex-col items-center justify-center gap-3 py-20">
+            <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={t.accent} strokeWidth="2">
+              <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+              <path d="M12 2a10 10 0 0 1 10 10" strokeOpacity="1" />
+            </svg>
+            <span className="lcd-text text-[10px]" style={{ color: t.lcdText }}>LOADING...</span>
+          </div>
+        )}
+        {!loading && (
+        <>
         {/* Title bar */}
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -362,6 +435,8 @@ const Player = () => {
             </span>
           </div>
         </div>
+        </>
+        )}
       </div>
 
       <style>{`
