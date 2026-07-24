@@ -153,20 +153,42 @@ const Player = () => {
         const data = await res.json();
         if (data.tracks && data.tracks.length > 0) {
           setTracks(data.tracks);
+          localStorage.setItem('mp3_playlist', JSON.stringify(data.tracks));
+          setLoading(false);
+          isLoaded.current = true;
+          return;
         }
       } catch {
-        // no saved playlist yet or API unavailable
+        // API unavailable, try localStorage
       } finally {
         clearTimeout(timeout);
-        setLoading(false);
-        isLoaded.current = true;
       }
+
+      try {
+        const saved = localStorage.getItem('mp3_playlist');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setTracks(parsed);
+          }
+        }
+      } catch {
+        // corrupted localStorage
+      }
+
+      setLoading(false);
+      isLoaded.current = true;
     };
     loadPlaylist();
   }, []);
 
   useEffect(() => {
     if (!isLoaded.current) return;
+
+    try {
+      localStorage.setItem('mp3_playlist', JSON.stringify(tracks));
+    } catch {}
+
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
 
@@ -180,7 +202,7 @@ const Player = () => {
           signal: controller.signal,
         });
       } catch {
-        // silent fail
+        // API sync failed, localStorage already has it
       } finally {
         clearTimeout(timeout);
       }
