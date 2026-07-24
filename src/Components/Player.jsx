@@ -155,9 +155,9 @@ const Player = () => {
         </div>
       )}
 
-      <div className="metal-frame w-full max-w-[400px] bg-[#12121d] relative z-10">
+      <div className="player-case w-full max-w-[400px] relative z-10">
         {/* Title bar */}
-        <div className="bg-gradient-to-b from-[#3d3d52] to-[#2a2a3a] px-3 py-1.5 flex items-center justify-between border-b border-[#1a1a2e]">
+        <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-[#ff2d95] text-[10px] font-bold uppercase tracking-[3px] lcd-text">MP3_PLAYER v1.0</span>
           </div>
@@ -183,7 +183,7 @@ const Player = () => {
           <FileUploader onFilesUpload={handleNewFiles} isDragOver={isDragOver} />
 
           {/* LCD Display area */}
-          <div className="bg-[#1a0d14] border-2 border-[#2a1a3d] p-4 space-y-3 shadow-[inset_0_2px_8px_rgba(0,0,0,0.6)]">
+          <div className="screen-bezel p-4 space-y-3">
             {/* Spectrum analyzer / Equalizer */}
             <Equalizer isPlaying={isPlaying} />
 
@@ -229,7 +229,7 @@ const Player = () => {
           />
 
           {/* Status bar */}
-          <div className="border-t border-[#2a2a3e] pt-2 flex justify-between px-1">
+          <div className="mt-3 pt-2 flex justify-between px-2 border-t border-[#ffffff08]">
             <span className="text-[#64748b] text-[8px] font-bold uppercase tracking-widest">
               {tracks.length > 0 ? `TRK ${String(currentTrackIndex + 1).padStart(2, '0')}/${String(tracks.length).padStart(2, '0')}` : 'NO TRACKS'}
             </span>
