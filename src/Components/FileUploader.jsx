@@ -4,24 +4,45 @@ const FileUploader = ({ onFilesUpload, isDragOver, accentColor }) => {
   const [uploading, setUploading] = useState(false);
 
   const uploadFile = async (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
 
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
 
-    if (!res.ok) {
-      throw new Error('Upload failed');
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeout);
+
+      if (!res.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Invalid response');
+      }
+
+      const data = await res.json();
+      return {
+        name: data.name,
+        url: data.url,
+        pathname: data.pathname,
+      };
+    } catch {
+      return {
+        name: file.name.replace(/\.[^/.]+$/, ''),
+        url: URL.createObjectURL(file),
+        local: true,
+      };
+    } finally {
+      clearTimeout(timeout);
     }
-
-    const data = await res.json();
-    return {
-      name: data.name,
-      url: data.url,
-      pathname: data.pathname,
-    };
   };
 
   const handleFileChange = async (e) => {

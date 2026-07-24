@@ -167,15 +167,21 @@ const Player = () => {
 
   useEffect(() => {
     if (!isLoaded.current) return;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
     const savePlaylist = async () => {
       try {
         await fetch('/api/playlist', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ tracks }),
+          signal: controller.signal,
         });
       } catch {
         // silent fail
+      } finally {
+        clearTimeout(timeout);
       }
     };
     savePlaylist();
@@ -266,14 +272,21 @@ const Player = () => {
         const newTracks = [];
         for (const file of audioFiles) {
           try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 15000);
             const formData = new FormData();
             formData.append('file', file);
-            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            const res = await fetch('/api/upload', { method: 'POST', body: formData, signal: controller.signal });
+            clearTimeout(timeout);
             if (res.ok) {
               const data = await res.json();
               newTracks.push({ name: data.name, url: data.url, pathname: data.pathname });
+            } else {
+              newTracks.push({ name: file.name.replace(/\.[^/.]+$/, ''), url: URL.createObjectURL(file), local: true });
             }
-          } catch {}
+          } catch {
+            newTracks.push({ name: file.name.replace(/\.[^/.]+$/, ''), url: URL.createObjectURL(file), local: true });
+          }
         }
         if (newTracks.length > 0) {
           handleNewFiles(newTracks);
