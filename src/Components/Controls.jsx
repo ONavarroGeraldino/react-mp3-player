@@ -1,132 +1,110 @@
 import React, { useState } from 'react';
-import './Style/Controls.css';
 
 const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, onVolumeChange }) => {
   const [isShuffled, setIsShuffled] = useState(false);
   const [repeatMode, setRepeatMode] = useState(0);
 
-  const cycleRepeat = () => {
-    setRepeatMode((prev) => (prev + 1) % 3);
-  };
-
-  const repeatIcon = () => {
-    if (repeatMode === 0) return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="17 1 21 5 17 9"></polyline>
-        <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-        <polyline points="7 23 3 19 7 15"></polyline>
-        <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-      </svg>
-    );
-    if (repeatMode === 1) return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="17 1 21 5 17 9"></polyline>
-        <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-        <polyline points="7 23 3 19 7 15"></polyline>
-        <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-      </svg>
-    );
-    return (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="17 1 21 5 17 9"></polyline>
-        <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-        <polyline points="7 23 3 19 7 15"></polyline>
-        <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-      </svg>
-    );
-  };
+  const cycleRepeat = () => setRepeatMode((prev) => (prev + 1) % 3);
 
   const handleVolumeChange = (e) => {
     onVolumeChange(parseFloat(e.target.value));
   };
 
   return (
-    <>
-      <div className="volume-container">
-        <button className="volume-icon" onClick={() => onVolumeChange(volume === 0 ? 1 : 0)}>
-          {volume === 0 ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-              <line x1="23" y1="9" x2="17" y2="15"></line>
-              <line x1="17" y1="9" x2="23" y2="15"></line>
-            </svg>
-          ) : volume < 0.5 ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-            </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-            </svg>
-          )}
+    <div className="space-y-4">
+      {/* Volume */}
+      <div className="flex items-center gap-2 px-2">
+        <button
+          onClick={() => onVolumeChange(volume === 0 ? 1 : 0)}
+          className="btn-bevel w-8 h-6 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52] active:scale-95 flex-shrink-0"
+        >
+          <svg width="12" height="10" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            {volume > 0 && <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />}
+          </svg>
         </button>
         <input
           type="range"
-          className="volume-slider"
+          className="winamp-slider flex-1"
           min="0"
           max="1"
           step="0.01"
           value={volume}
           onChange={handleVolumeChange}
-          style={{ '--volume': volume }}
         />
-        <span className="volume-pct">{Math.round(volume * 100)}</span>
+        <span className="lcd-text text-[8px] w-7 text-right">{Math.round(volume * 100)}</span>
       </div>
 
-      <div className="controls-container">
+      {/* Controls */}
+      <div className="flex items-center justify-center gap-3">
+        {/* Shuffle */}
         <button
-          className={`control-btn utility ${isShuffled ? 'active' : ''}`}
           onClick={() => setIsShuffled(!isShuffled)}
-          title="Aleatorio"
+          className={`btn-bevel w-8 h-7 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52] ${
+            isShuffled ? 'text-[#00ff41] neon-glow' : 'text-[#64748b]'
+          }`}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="16 3 21 3 21 8"></polyline>
-            <line x1="4" y1="20" x2="21" y2="3"></line>
-            <polyline points="21 16 21 21 16 21"></polyline>
-            <line x1="15" y1="15" x2="21" y2="21"></line>
-            <line x1="4" y1="4" x2="9" y2="9"></line>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="16 3 21 3 21 8" />
+            <line x1="4" y1="20" x2="21" y2="3" />
+            <polyline points="21 16 21 21 16 21" />
+            <line x1="15" y1="15" x2="21" y2="21" />
+            <line x1="4" y1="4" x2="9" y2="9" />
           </svg>
         </button>
 
-        <button className="control-btn secondary" onClick={onSkipBack} title="Anterior">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polygon points="19 20 9 12 19 4 19 20"></polygon>
-            <line x1="5" y1="19" x2="5" y2="5"></line>
+        {/* Prev */}
+        <button onClick={onSkipBack} className="btn-bevel w-10 h-10 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52] text-[#c8c8d0]">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="19 20 9 12 19 4 19 20" />
+            <line x1="5" y1="19" x2="5" y2="5" />
           </svg>
         </button>
 
-        <button className="control-btn main-action" onClick={onPlayPause}>
+        {/* Play/Pause */}
+        <button
+          onClick={onPlayPause}
+          className="btn-bevel w-14 h-14 flex items-center justify-center bg-gradient-to-b from-[#00ff55] to-[#00aa33] hover:from-[#33ff77] hover:to-[#00cc44] text-black neon-glow"
+        >
           {isPlaying ? (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-              <rect x="6" y="4" width="4" height="16"></rect>
-              <rect x="14" y="4" width="4" height="16"></rect>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <rect x="6" y="4" width="4" height="16" />
+              <rect x="14" y="4" width="4" height="16" />
             </svg>
           ) : (
-            <svg className="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="ml-[2px]">
+              <polygon points="7 3 21 12 7 21 7 3" />
             </svg>
           )}
         </button>
 
-        <button className="control-btn secondary" onClick={onSkipForward} title="Siguiente">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polygon points="5 4 15 12 5 20 5 4"></polygon>
-            <line x1="19" y1="5" x2="19" y2="19"></line>
+        {/* Next */}
+        <button onClick={onSkipForward} className="btn-bevel w-10 h-10 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52] text-[#c8c8d0]">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="5 4 15 12 5 20 5 4" />
+            <line x1="19" y1="5" x2="19" y2="19" />
           </svg>
         </button>
 
+        {/* Repeat */}
         <button
-          className={`control-btn utility repeat-one ${repeatMode === 1 ? 'active' : ''} ${repeatMode === 2 ? 'active' : ''}`}
           onClick={cycleRepeat}
-          title={repeatMode === 0 ? 'Sin repeticion' : repeatMode === 1 ? 'Repetir una' : 'Repetir todo'}
+          className={`btn-bevel w-8 h-7 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52] relative ${
+            repeatMode > 0 ? 'text-[#00ff41] neon-glow' : 'text-[#64748b]'
+          }`}
         >
-          {repeatIcon()}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="17 1 21 5 17 9" />
+            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+            <polyline points="7 23 3 19 7 15" />
+            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+          </svg>
+          {repeatMode === 1 && (
+            <span className="absolute -top-0.5 -right-0.5 lcd-text text-[6px]">1</span>
+          )}
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import './Style/FileUploader.css';
 
 const FileUploader = ({ onFilesUpload, isDragOver }) => {
 
@@ -20,28 +19,32 @@ const FileUploader = ({ onFilesUpload, isDragOver }) => {
   };
 
   return (
-    <div className={`uploader-container ${isDragOver ? 'drag-over' : ''}`}>
-      <label htmlFor="file-upload" className="custom-file-upload">
-        <span className="upload-icon-row">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-          <span className="upload-icon-plus">
-            <svg width="6" height="6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-          </span>
+    <div className={`w-full ${isDragOver ? 'ring-2 ring-[#00ff41]' : ''}`}>
+      <label
+        htmlFor="file-upload"
+        className={`btn-bevel flex items-center justify-center gap-2 py-2.5 px-4 w-full cursor-pointer transition-all duration-150 ${
+          isDragOver
+            ? 'bg-[#0a1a0a] text-[#00ff41]'
+            : 'bg-[#1a1a2e] hover:bg-[#222238] text-[#94a3b8] hover:text-[#c8c8d0]'
+        }`}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="17 8 12 3 7 8" />
+          <line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+        <span className={`text-xs font-bold uppercase tracking-wider ${
+          isDragOver ? 'font-[Press_Start_2P] text-[10px]' : ''
+        }`}>
+          {isDragOver ? 'SOLTAR AQUI' : 'ADD FILES [.mp3]'}
         </span>
-        <span className="upload-text">Añadir canciones MP3</span>
         <input
           id="file-upload"
           type="file"
           accept="audio/mp3,audio/mpeg"
           multiple
           onChange={handleFileChange}
+          className="hidden"
         />
       </label>
     </div>

@@ -1,34 +1,31 @@
 import React from 'react';
-import './Style/ProgressBar.css';
 
 const ProgressBar = ({ currentTime, duration, onSeek }) => {
-  
-  // Función auxiliar para formatear segundos a MM:SS
+
   const formatTime = (time) => {
-    if (isNaN(time)) return "0:00";
+    if (isNaN(time)) return '00:00';
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
-  // Calculamos el porcentaje para el background de la barra (opcional para estilo)
   const progressPercent = (currentTime / duration) * 100 || 0;
 
   return (
-    <div className="progress-container">
-      <input 
-        type="range" 
-        className="progress-bar"
+    <div className="w-full px-1">
+      <div className="flex justify-between items-center mb-1 px-1">
+        <span className="lcd-text text-[10px]">{formatTime(currentTime)}</span>
+        <span className="lcd-text text-[10px]">{formatTime(duration)}</span>
+      </div>
+      <input
+        type="range"
+        className="winamp-progress"
         min="0"
         max={duration || 0}
         value={currentTime}
         onChange={(e) => onSeek(e.target.value)}
         style={{ '--progress': `${progressPercent}%` }}
       />
-      <div className="time-info">
-        <span>{formatTime(currentTime)}</span>
-        <span>{formatTime(duration)}</span>
-      </div>
     </div>
   );
 };
