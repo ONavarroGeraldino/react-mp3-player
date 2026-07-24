@@ -4,6 +4,7 @@ import ProgressBar from './ProgressBar';
 import FileUploader from './FileUploader';
 import TrackList from './TrackList';
 import Equalizer from './Equalizer';
+import ThreeBackground from './ThreeBackground';
 import useAudio from '../hook/useAudio';
 
 const Player = () => {
@@ -139,6 +140,8 @@ const Player = () => {
         isDragOver ? 'after:fixed after:inset-0 after:z-50 after:border-[3px] after:border-dashed after:border-[#ff2d95] after:m-4 after:flex after:items-center after:justify-center after:content-["DROP_MP3_HERE"] after:text-[#ff2d95] after:font-["Press_Start_2P"] after:text-sm after:bg-black/80' : ''
       }`}
     >
+      <ThreeBackground />
+
       {/* Scanline overlay */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03]"
         style={{
