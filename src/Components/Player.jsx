@@ -5,6 +5,7 @@ import FileUploader from './FileUploader';
 import TrackList from './TrackList';
 import Equalizer from './Equalizer';
 import ThreeBackground from './ThreeBackground';
+import CornerViz from './CornerViz';
 import useAudio from '../hook/useAudio';
 
 const Player = () => {
@@ -183,7 +184,8 @@ const Player = () => {
           <FileUploader onFilesUpload={handleNewFiles} isDragOver={isDragOver} />
 
           {/* LCD Display area */}
-          <div className="screen-bezel p-4 space-y-3">
+          <div className="screen-bezel p-4 space-y-3 relative">
+            <CornerViz isPlaying={isPlaying} />
             {/* Spectrum analyzer / Equalizer */}
             <Equalizer isPlaying={isPlaying} />
 
