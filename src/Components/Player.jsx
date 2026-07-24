@@ -172,10 +172,11 @@ const Player = () => {
 
     const savePlaylist = async () => {
       try {
+        const tracksToSave = tracks.filter(t => !t.local);
         await fetch('/api/playlist', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tracks }),
+          body: JSON.stringify({ tracks: tracksToSave }),
           signal: controller.signal,
         });
       } catch {

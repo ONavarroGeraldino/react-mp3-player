@@ -1,4 +1,4 @@
-import { put, head, del } from '@vercel/blob';
+import { put, list, del } from '@vercel/blob';
 
 const PLAYLIST_KEY = 'playlist.json';
 
@@ -10,15 +10,21 @@ export default async function handler(req) {
   try {
     if (req.method === 'GET') {
       try {
-        const blob = await head(PLAYLIST_KEY);
-        if (!blob) {
+        const { blobs } = await list();
+        const playlists = blobs.filter(b => b.pathname === PLAYLIST_KEY);
+
+        if (playlists.length === 0) {
           return new Response(JSON.stringify({ tracks: [] }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
           });
         }
 
-        const response = await fetch(blob.url);
+        const latest = playlists.sort((a, b) =>
+          new Date(b.uploadedAt) - new Date(a.uploadedAt)
+        )[0];
+
+        const response = await fetch(latest.url);
         const data = await response.json();
         return new Response(JSON.stringify(data), {
           status: 200,
