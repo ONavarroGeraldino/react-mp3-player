@@ -387,7 +387,7 @@ const Player = () => {
         {/* Main content */}
         <div className="p-4 space-y-4">
           {/* File upload */}
-          <FileUploader onFilesUpload={handleNewFiles} isDragOver={isDragOver} accentColor={t.accent} />
+          <FileUploader onFilesUpload={handleNewFiles} isDragOver={isDragOver} accentColor={t.accent} onToast={showToast} />
 
           {/* LCD Display area */}
           <div className="screen-bezel p-4 space-y-3 relative" style={{ background: t.lcdBg, borderColor: t.lcdBorder }}>

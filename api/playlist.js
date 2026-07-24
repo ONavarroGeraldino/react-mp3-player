@@ -10,7 +10,7 @@ export default async function handler(req) {
   try {
     if (req.method === 'GET') {
       try {
-        const { blobs } = await list();
+        const { blobs } = await list({ prefix: 'playlist.json' });
         const playlists = blobs.filter(b => b.pathname === PLAYLIST_KEY);
 
         if (playlists.length === 0) {

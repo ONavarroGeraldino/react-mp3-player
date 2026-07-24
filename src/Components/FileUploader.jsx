@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const FileUploader = ({ onFilesUpload, isDragOver, accentColor }) => {
+const FileUploader = ({ onFilesUpload, isDragOver, accentColor, onToast }) => {
   const [uploading, setUploading] = useState(false);
 
   const uploadFile = async (file) => {
@@ -19,14 +19,10 @@ const FileUploader = ({ onFilesUpload, isDragOver, accentColor }) => {
 
       clearTimeout(timeout);
 
-      if (!res.ok) {
-        throw new Error('Upload failed');
-      }
+      if (!res.ok) throw new Error('Upload failed');
 
       const contentType = res.headers.get('content-type') || '';
-      if (!contentType.includes('application/json')) {
-        throw new Error('Invalid response');
-      }
+      if (!contentType.includes('application/json')) throw new Error('Invalid response');
 
       const data = await res.json();
       return {
@@ -54,10 +50,12 @@ const FileUploader = ({ onFilesUpload, isDragOver, accentColor }) => {
     setUploading(true);
 
     const newTracks = [];
+    let cloudCount = 0;
 
     for (const file of audioFiles) {
       try {
         const track = await uploadFile(file);
+        if (!track.local) cloudCount++;
         newTracks.push(track);
       } catch (err) {
         console.error('Upload error for', file.name, err);
@@ -66,6 +64,11 @@ const FileUploader = ({ onFilesUpload, isDragOver, accentColor }) => {
 
     if (newTracks.length > 0) {
       onFilesUpload(newTracks);
+      if (cloudCount === 0 && newTracks.length > 0) {
+        onToast?.('LOCAL ONLY - NO CLOUD SYNC');
+      } else if (cloudCount === newTracks.length) {
+        onToast?.('SYNCED TO CLOUD');
+      }
     }
 
     setUploading(false);
