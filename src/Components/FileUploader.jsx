@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { saveToIndexedDB } from '../utils/storage';
 
 const FileUploader = ({ onFilesUpload, isDragOver, accentColor, onToast }) => {
   const [uploading, setUploading] = useState(false);
@@ -31,13 +32,16 @@ const FileUploader = ({ onFilesUpload, isDragOver, accentColor, onToast }) => {
         pathname: data.pathname,
       };
     } catch {
+      clearTimeout(timeout);
+      const id = 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const name = file.name.replace(/\.[^/.]+$/, '');
+      await saveToIndexedDB(id, file, name);
       return {
-        name: file.name.replace(/\.[^/.]+$/, ''),
+        name,
         url: URL.createObjectURL(file),
         local: true,
+        localId: id,
       };
-    } finally {
-      clearTimeout(timeout);
     }
   };
 

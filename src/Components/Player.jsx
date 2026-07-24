@@ -8,6 +8,7 @@ import ThreeBackground from './ThreeBackground';
 import CornerViz from './CornerViz';
 import StyleSwitcher from './StyleSwitcher';
 import useAudio from '../hook/useAudio';
+import { getAllFromIndexedDB, loadFromIndexedDB, deleteFromIndexedDB, clearIndexedDB } from '../utils/storage';
 
 const themes = {
   0: {
@@ -141,19 +142,6 @@ const Player = () => {
 
   useEffect(() => {
     const loadPlaylist = async () => {
-      let loaded = false;
-
-      try {
-        const saved = localStorage.getItem('mp3_playlist');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setTracks(parsed);
-            loaded = true;
-          }
-        }
-      } catch {}
-
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 5000);
 
@@ -167,13 +155,38 @@ const Player = () => {
             if (data.tracks && data.tracks.length > 0) {
               setTracks(data.tracks);
               localStorage.setItem('mp3_playlist', JSON.stringify(data.tracks));
-              loaded = true;
+              setLoading(false);
+              isLoaded.current = true;
+              return;
             }
           }
         }
       } catch {} finally {
         clearTimeout(timeout);
       }
+
+      try {
+        const saved = localStorage.getItem('mp3_playlist');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const restored = await Promise.all(parsed.map(async (t) => {
+              if (t.local && t.localId) {
+                const entry = await loadFromIndexedDB(t.localId);
+                if (entry && entry.file) {
+                  return { ...t, url: URL.createObjectURL(entry.file) };
+                }
+                return null;
+              }
+              return t;
+            }));
+            const valid = restored.filter(Boolean);
+            if (valid.length > 0) {
+              setTracks(valid);
+            }
+          }
+        }
+      } catch {}
 
       setLoading(false);
       isLoaded.current = true;
@@ -214,6 +227,9 @@ const Player = () => {
     if (index < currentTrackIndex || (index === currentTrackIndex && tracks.length === 1)) {
       setCurrentTrackIndex(prev => (prev - 1 + tracks.length) % Math.max(tracks.length - 1, 1));
     }
+    if (removed.localId) {
+      deleteFromIndexedDB(removed.localId).catch(() => {});
+    }
     if (removed.url) {
       fetch('/api/playlist', {
         method: 'DELETE',
@@ -225,6 +241,7 @@ const Player = () => {
   };
 
   const handleClearAll = () => {
+    clearIndexedDB().catch(() => {});
     tracks.forEach(track => {
       if (track.url) {
         fetch('/api/playlist', {
