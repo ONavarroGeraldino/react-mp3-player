@@ -135,6 +135,45 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
     inset 0 1px 0 rgba(0, 240, 255, 0.05);
 }
 
+/* Style 4: Retro Amber */
+.retro-case {
+  border-radius: 16px;
+  background: linear-gradient(180deg, #3a3228 0%, #262016 3%, #1e1a10 50%, #16120a 100%);
+  box-shadow:
+    0 0 0 2px #5a4a3a,
+    0 0 0 4px #1a1208,
+    0 0 0 5px #4a3a28,
+    0 8px 40px rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    inset 0 -1px 0 rgba(0,0,0,0.4);
+}
+
+/* Style 5: Chrome / iPod */
+.chrome-case {
+  border-radius: 20px;
+  background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 30%, #cbd5e1 50%, #f1f5f9 70%, #94a3b8 100%);
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.4),
+    0 0 0 5px rgba(148,163,184,0.3),
+    0 8px 40px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    inset 0 -1px 0 rgba(0,0,0,0.2);
+}
+
+/* Style 6: Lava */
+.lava-case {
+  border-radius: 12px;
+  background: linear-gradient(180deg, #2a1a1a 0%, #1e1010 3%, #160a0a 50%, #0e0606 100%);
+  box-shadow:
+    0 0 0 2px #4a2020,
+    0 0 0 4px #1a0a0a,
+    0 0 0 5px #3a1515,
+    0 0 30px rgba(239,68,68,0.15),
+    0 8px 40px rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    inset 0 -1px 0 rgba(0,0,0,0.4);
+}
+
 /* Screen bezel */
 .screen-bezel {
   border-radius: 6px;

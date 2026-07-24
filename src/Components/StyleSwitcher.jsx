@@ -1,4 +1,4 @@
-const styles = ['FISICO', 'GLASS', 'NEON'];
+const styles = ['FISICO', 'GLASS', 'NEON', 'RETRO', 'CHROME', 'LAVA'];
 
 const StyleSwitcher = ({ currentStyle, onChange }) => {
   const next = () => {
