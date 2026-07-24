@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-const notes = ['♪', '♫', '♬', '♪', '♫', '♩', '♪', '♬'];
+const noteSymbols = ['♪', '♫', '♬', '♪', '♫', '♩', '♪', '♬'];
 
-const CornerViz = ({ isPlaying }) => {
+const CornerViz = ({ isPlaying, accentColor }) => {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
@@ -18,8 +18,8 @@ const CornerViz = ({ isPlaying }) => {
         if (filtered.length < 6) {
           const newItem = {
             id: now + Math.random(),
-            x: 10 + Math.random() * 80,
-            symbol: notes[Math.floor(Math.random() * notes.length)],
+            x: 5 + Math.random() * 90,
+            symbol: noteSymbols[Math.floor(Math.random() * noteSymbols.length)],
             size: 8 + Math.random() * 10,
             opacity: 0.4 + Math.random() * 0.6,
             delay: Math.random() * 0.3,
@@ -42,12 +42,12 @@ const CornerViz = ({ isPlaying }) => {
           key={item.id}
           className="absolute"
           style={{
-            left: `${5 + Math.random() * 90}%`,
-            top: `${40 + Math.random() * 55}%`,
+            left: `${item.x}%`,
+            top: `${20 + Math.random() * 70}%`,
             fontSize: `${item.size}px`,
             opacity: item.opacity,
-            color: '#ff2d95',
-            textShadow: '0 0 4px rgba(255,45,149,0.4)',
+            color: accentColor,
+            textShadow: `0 0 4px ${accentColor}`,
             animation: `noteFloat 1.8s ease-out ${item.delay}s forwards`,
           }}
         >

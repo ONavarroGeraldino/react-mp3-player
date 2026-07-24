@@ -6,7 +6,56 @@ import TrackList from './TrackList';
 import Equalizer from './Equalizer';
 import ThreeBackground from './ThreeBackground';
 import CornerViz from './CornerViz';
+import StyleSwitcher from './StyleSwitcher';
 import useAudio from '../hook/useAudio';
+
+const themes = {
+  0: {
+    name: 'MP3_PHYSICAL',
+    accent: '#ff2d95',
+    accentDim: '#cc2477',
+    accentRgb: '255,45,149',
+    lcdBg: '#1a0d14',
+    lcdBorder: '#2a1a3d',
+    lcdText: '#ff2d95',
+    caseClass: 'player-case',
+    bgColor: '#08080f',
+    sphereColor: '#ff2d95',
+    sphereSize: 'large',
+    btnPlayFrom: '#ff2d95',
+    btnPlayTo: '#cc0052',
+  },
+  1: {
+    name: 'MP3_GLASS',
+    accent: '#a855f7',
+    accentDim: '#7c3aed',
+    accentRgb: '168,85,247',
+    lcdBg: 'rgba(255,255,255,0.05)',
+    lcdBorder: 'rgba(255,255,255,0.12)',
+    lcdText: '#c084fc',
+    caseClass: 'glass-case',
+    bgColor: '#0f0a1a',
+    sphereColor: '#a855f7',
+    sphereSize: 'small',
+    btnPlayFrom: '#a855f7',
+    btnPlayTo: '#6d28d9',
+  },
+  2: {
+    name: 'MP3_NEON',
+    accent: '#00f0ff',
+    accentDim: '#00b8cc',
+    accentRgb: '0,240,255',
+    lcdBg: '#050505',
+    lcdBorder: '#1a3a3a',
+    lcdText: '#00f0ff',
+    caseClass: 'neon-case',
+    bgColor: '#050505',
+    sphereColor: '#00f0ff',
+    sphereSize: 'hidden',
+    btnPlayFrom: '#00f0ff',
+    btnPlayTo: '#0099aa',
+  },
+};
 
 const Player = () => {
   const [tracks, setTracks] = useState([]);
@@ -14,8 +63,11 @@ const Player = () => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [toast, setToast] = useState(null);
   const [showTracklist, setShowTracklist] = useState(false);
+  const [style, setStyle] = useState(0);
   const dragCounter = useRef(0);
   const toastTimer = useRef(null);
+
+  const t = themes[style];
 
   const {
     isPlaying,
@@ -137,11 +189,12 @@ const Player = () => {
 
   return (
     <main
-      className={`min-h-[100dvh] w-full flex items-center justify-center p-4 bg-[#08080f] relative overflow-hidden ${
-        isDragOver ? 'after:fixed after:inset-0 after:z-50 after:border-[3px] after:border-dashed after:border-[#ff2d95] after:m-4 after:flex after:items-center after:justify-center after:content-["DROP_MP3_HERE"] after:text-[#ff2d95] after:font-["Press_Start_2P"] after:text-sm after:bg-black/80' : ''
-      }`}
+      className={`min-h-[100dvh] w-full flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-500`}
+      style={{ backgroundColor: t.bgColor }}
     >
-      <ThreeBackground />
+      <ThreeBackground style={style} accentColor={t.sphereColor} size={t.sphereSize} />
+
+      <StyleSwitcher currentStyle={style} onChange={setStyle} />
 
       {/* Scanline overlay */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03]"
@@ -151,16 +204,20 @@ const Player = () => {
       />
 
       {toast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 btn-bevel bg-[#1a1a2e] px-6 py-3 border border-[#3d3d52] text-[#ff2d95] text-[10px] font-bold uppercase tracking-widest lcd-text animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 btn-bevel bg-[#1a1a2e] px-6 py-3 border border-[#3d3d52] text-[10px] font-bold uppercase tracking-widest lcd-text animate-[fadeIn_0.2s_ease-out]"
+          style={{ color: t.accent, textShadow: `0 0 6px rgba(${t.accentRgb},0.4)` }}>
           {toast}
         </div>
       )}
 
-      <div className="player-case w-full max-w-[400px] relative z-10">
+      <div className={`${t.caseClass} w-full max-w-[400px] relative z-10 transition-all duration-500`}>
         {/* Title bar */}
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-[#ff2d95] text-[10px] font-bold uppercase tracking-[3px] lcd-text">MP3_PLAYER v1.0</span>
+            <span className="text-[10px] font-bold uppercase tracking-[3px] lcd-text"
+              style={{ color: t.lcdText, textShadow: `0 0 6px rgba(${t.accentRgb},0.4)` }}>
+              {t.name}
+            </span>
           </div>
           <div className="flex items-center gap-1.5">
             {tracks.length > 0 && (
@@ -181,22 +238,29 @@ const Player = () => {
         {/* Main content */}
         <div className="p-4 space-y-4">
           {/* File upload */}
-          <FileUploader onFilesUpload={handleNewFiles} isDragOver={isDragOver} />
+          <FileUploader onFilesUpload={handleNewFiles} isDragOver={isDragOver} accentColor={t.accent} />
 
           {/* LCD Display area */}
-          <div className="screen-bezel p-4 space-y-3 relative">
-            <CornerViz isPlaying={isPlaying} />
+          <div className="screen-bezel p-4 space-y-3 relative" style={{ background: t.lcdBg, borderColor: t.lcdBorder }}>
+            <CornerViz isPlaying={isPlaying} accentColor={t.accent} />
             {/* Spectrum analyzer / Equalizer */}
-            <Equalizer isPlaying={isPlaying} />
+            <Equalizer isPlaying={isPlaying} accentColor={t.accent} />
 
             {/* Track name LCD */}
             <div className="text-center space-y-1">
-              <h2 className="lcd-text text-[11px] leading-relaxed truncate px-2">
+              <h2 className="lcd-text text-[11px] leading-relaxed truncate px-2"
+                style={{ color: t.lcdText, textShadow: `0 0 6px rgba(${t.accentRgb},0.4)` }}>
                 {currentTrackName.replace(/ /g, '_').toUpperCase()}
               </h2>
               <div className="flex items-center justify-center gap-2">
-                <span className={`w-1.5 h-1.5 rounded-none ${isPlaying ? 'bg-[#ff2d95] neon-glow' : 'bg-[#2a1a3d]'}`} />
-                <span className="text-[#ff2d95] text-[8px] font-bold uppercase tracking-[2px] font-[Press_Start_2P]">
+                <span className="w-1.5 h-1.5 rounded-none"
+                  style={{
+                    backgroundColor: isPlaying ? t.accent : t.lcdBorder,
+                    boxShadow: isPlaying ? `0 0 8px rgba(${t.accentRgb},0.5)` : 'none',
+                  }}
+                />
+                <span className="text-[8px] font-bold uppercase tracking-[2px] font-[Press_Start_2P]"
+                  style={{ color: t.lcdText }}>
                   {tracks.length === 0 ? 'STAND_BY' : isPlaying ? 'PLAYING >>' : 'PAUSED ||'}
                 </span>
               </div>
@@ -207,6 +271,11 @@ const Player = () => {
               currentTime={currentTime}
               duration={duration}
               onSeek={seek}
+              accentColor={t.accent}
+              accentDim={t.accentDim}
+              lcdBg={t.lcdBg}
+              lcdBorder={t.lcdBorder}
+              lcdText={t.lcdText}
             />
           </div>
 
@@ -218,6 +287,11 @@ const Player = () => {
             onSkipForward={skipForward}
             onSkipBack={skipBack}
             onVolumeChange={setVolume}
+            accentColor={t.accent}
+            accentRgb={t.accentRgb}
+            lcdText={t.lcdText}
+            btnPlayFrom={t.btnPlayFrom}
+            btnPlayTo={t.btnPlayTo}
           />
 
           {/* Tracklist */}
@@ -228,6 +302,9 @@ const Player = () => {
             onRemoveTrack={handleRemoveTrack}
             visible={showTracklist || tracks.length > 0}
             onToggle={() => setShowTracklist(prev => !prev)}
+            accentColor={t.accent}
+            accentRgb={t.accentRgb}
+            lcdText={t.lcdText}
           />
 
           {/* Status bar */}

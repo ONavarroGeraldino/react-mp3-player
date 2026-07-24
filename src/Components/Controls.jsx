@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, onVolumeChange }) => {
+const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, onVolumeChange, accentColor, accentRgb, lcdText, btnPlayFrom, btnPlayTo }) => {
   const [isShuffled, setIsShuffled] = useState(false);
   const [repeatMode, setRepeatMode] = useState(0);
 
@@ -32,7 +32,7 @@ const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, o
           value={volume}
           onChange={handleVolumeChange}
         />
-        <span className="lcd-text text-[8px] w-7 text-right">{Math.round(volume * 100)}</span>
+        <span className="lcd-text text-[8px] w-7 text-right" style={{ color: lcdText }}>{Math.round(volume * 100)}</span>
       </div>
 
       {/* Controls */}
@@ -40,9 +40,8 @@ const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, o
         {/* Shuffle */}
         <button
           onClick={() => setIsShuffled(!isShuffled)}
-          className={`btn-bevel w-8 h-7 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52] ${
-            isShuffled ? 'text-[#ff2d95] neon-glow' : 'text-[#64748b]'
-          }`}
+          className="btn-bevel w-8 h-7 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52]"
+          style={isShuffled ? { color: accentColor, boxShadow: `0 0 12px rgba(${accentRgb},0.3), 0 0 4px rgba(${accentRgb},0.5)` } : { color: '#64748b' }}
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="16 3 21 3 21 8" />
@@ -64,7 +63,11 @@ const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, o
         {/* Play/Pause */}
         <button
           onClick={onPlayPause}
-          className="btn-bevel w-14 h-14 flex items-center justify-center bg-gradient-to-b from-[#ff2d95] to-[#cc0052] hover:from-[#ff4da6] hover:to-[#e6005c] text-white neon-glow"
+          className="btn-bevel w-14 h-14 flex items-center justify-center text-white"
+          style={{
+            background: `linear-gradient(to bottom, ${btnPlayFrom}, ${btnPlayTo})`,
+            boxShadow: `0 0 12px rgba(${accentRgb},0.3), 0 0 4px rgba(${accentRgb},0.5)`,
+          }}
         >
           {isPlaying ? (
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none">
@@ -89,9 +92,8 @@ const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, o
         {/* Repeat */}
         <button
           onClick={cycleRepeat}
-          className={`btn-bevel w-8 h-7 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52] relative ${
-            repeatMode > 0 ? 'text-[#ff2d95] neon-glow' : 'text-[#64748b]'
-          }`}
+          className="btn-bevel w-8 h-7 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52] relative"
+          style={repeatMode > 0 ? { color: accentColor, boxShadow: `0 0 12px rgba(${accentRgb},0.3)` } : { color: '#64748b' }}
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="17 1 21 5 17 9" />
@@ -100,7 +102,7 @@ const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, o
             <path d="M21 13v2a4 4 0 0 1-4 4H3" />
           </svg>
           {repeatMode === 1 && (
-            <span className="absolute -top-0.5 -right-0.5 lcd-text text-[6px]">1</span>
+            <span className="absolute -top-0.5 -right-0.5 lcd-text text-[6px]" style={{ color: accentColor }}>1</span>
           )}
         </button>
       </div>

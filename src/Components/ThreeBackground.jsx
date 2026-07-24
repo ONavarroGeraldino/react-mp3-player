@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const ThreeBackground = () => {
+const ThreeBackground = ({ style = 0, accentColor = '#ff2d95', size = 'large' }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    if (size === 'hidden') return;
+
     const container = containerRef.current;
     if (!container) return;
 
@@ -16,17 +18,16 @@ const ThreeBackground = () => {
       0.1,
       1000
     );
-    camera.position.z = 3.5;
+    camera.position.z = size === 'small' ? 5 : 3.5;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    const pointCount = 3000;
-    const radius = 2.5;
+    const pointCount = size === 'small' ? 1500 : 3000;
+    const radius = size === 'small' ? 1.2 : 2.5;
     const positions = new Float32Array(pointCount * 3);
-    const colors = new Float32Array(pointCount * 3);
 
     for (let i = 0; i < pointCount; i++) {
       const phi = Math.acos(2 * Math.random() - 1);
@@ -39,21 +40,15 @@ const ThreeBackground = () => {
       positions[i * 3] = x;
       positions[i * 3 + 1] = y;
       positions[i * 3 + 2] = z;
-
-      const color = new THREE.Color('#ff2d95');
-      const alpha = 0.3 + Math.random() * 0.7;
-      colors[i * 3] = color.r;
-      colors[i * 3 + 1] = color.g;
-      colors[i * 3 + 2] = color.b;
     }
 
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
+    const color = new THREE.Color(accentColor);
     const material = new THREE.PointsMaterial({
-      size: 0.02,
-      vertexColors: true,
+      size: size === 'small' ? 0.015 : 0.02,
+      color: color,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
       transparent: true,
@@ -95,9 +90,9 @@ const ThreeBackground = () => {
       material.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [accentColor, size]);
 
-  return <div ref={containerRef} className="fixed inset-0 z-0 pointer-events-none" />;
+  return <div ref={containerRef} className="fixed inset-0 z-0 pointer-events-none transition-opacity duration-500" />;
 };
 
 export default ThreeBackground;
