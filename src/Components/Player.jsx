@@ -141,16 +141,23 @@ const Player = () => {
 
   useEffect(() => {
     const loadPlaylist = async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+
       try {
-        const res = await fetch('/api/playlist');
+        const res = await fetch('/api/playlist', { signal: controller.signal });
+        clearTimeout(timeout);
         if (!res.ok) return;
+        const contentType = res.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) return;
         const data = await res.json();
         if (data.tracks && data.tracks.length > 0) {
           setTracks(data.tracks);
         }
       } catch {
-        // no saved playlist yet
+        // no saved playlist yet or API unavailable
       } finally {
+        clearTimeout(timeout);
         setLoading(false);
         isLoaded.current = true;
       }
