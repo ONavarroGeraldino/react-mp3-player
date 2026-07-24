@@ -1,77 +1,205 @@
-.tracklist-container {
-  margin-top: 20px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  padding: 15px;
-  max-height: 200px; /* Limita el alto */
-  overflow-y: auto;  /* Scroll vertical si es necesario */
+.tracklist-empty {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 24px 16px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 400;
 }
 
-/* Personalización del scrollbar (estilo moderno) */
-.tracklist-container::-webkit-scrollbar {
-  width: 5px;
+.empty-icon {
+  opacity: 0.25;
 }
+
+.tracklist-container {
+  margin-top: 4px;
+  padding: 10px 6px;
+  border-radius: 14px;
+  background: #0003;
+  border: 1px solid #ffffff08;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.tracklist-container::-webkit-scrollbar {
+  width: 3px;
+}
+
+.tracklist-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .tracklist-container::-webkit-scrollbar-thumb {
-  background: #6366f1;
-  border-radius: 10px;
+  background: #6366f14d;
+  border-radius: 4px;
+}
+
+.tracklist-container::-webkit-scrollbar-thumb:hover {
+  background: #6366f180;
+}
+
+.tracklist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px 8px;
 }
 
 .tracklist-title {
-  color: #94a3b8;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
-  text-align: left;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.tracklist-count {
+  color: var(--text-muted);
+  background: #ffffff0a;
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .tracklist-ul {
-  list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .track-item {
+  cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  margin-bottom: 5px;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  margin-bottom: 1px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.track-item:last-child {
+  margin-bottom: 0;
 }
 
 .track-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #ffffff0d;
+}
+
+.track-item:active {
+  transform: scale(0.98);
 }
 
 .track-item.active {
-  background: rgba(99, 102, 241, 0.2);
-  border-left: 3px solid #6366f1;
+  background: #6366f11a;
+}
+
+.track-item.active::before {
+  content: "";
+  position: absolute;
+  top: 20%;
+  left: 0;
+  width: 2.5px;
+  height: 60%;
+  border-radius: 2px;
+  background: var(--accent-gradient);
 }
 
 .track-number {
-  color: #6366f1;
-  margin-right: 15px;
-  font-weight: bold;
+  flex-shrink: 0;
   width: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.track-item.active .track-number {
+  color: var(--accent-primary);
 }
 
 .track-details {
   display: flex;
   flex-direction: column;
-  text-align: left;
   flex-grow: 1;
+  min-width: 0;
+  text-align: left;
 }
 
 .track-name-list {
-  color: #fff;
-  font-size: 0.85rem;
+  color: #d1d5db;
+  font-size: 0.82rem;
+  font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
+  transition: color 0.2s;
+}
+
+.track-item.active .track-name-list {
+  color: #fff;
 }
 
 .track-author-list {
-  color: #64748b;
-  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 1px;
+  font-size: 0.65rem;
+  font-weight: 400;
+}
+
+.playing-indicator {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.indicator-bar {
+  width: 2.5px;
+  border-radius: 2px;
+  background: var(--accent-primary);
+  animation: indicatorAnim 0.8s ease-in-out infinite alternate;
+}
+
+.bar-a { height: 8px; animation-delay: -0.4s; }
+.bar-b { height: 14px; animation-delay: -0.2s; }
+.bar-c { height: 10px; animation-delay: -0.6s; }
+
+@keyframes indicatorAnim {
+  0% { opacity: 0.4; height: 3px; }
+  100% { opacity: 1; height: 14px; }
+}
+
+.track-remove {
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.track-item:hover .track-remove {
+  opacity: 0.6;
+}
+
+.track-remove:hover {
+  color: #ef4444;
+  background: #ef444426;
+  opacity: 1 !important;
 }

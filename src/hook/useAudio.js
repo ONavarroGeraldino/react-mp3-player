@@ -5,15 +5,14 @@ const useAudio = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [volume, setVolumeState] = useState(1);
 
-  // 1. Función para cargar una nueva canción
   const loadTrack = (url) => {
     audio.current.src = url;
     audio.current.load();
     if (isPlaying) audio.current.play();
   };
 
-  // 2. Play / Pause
   const togglePlayPause = () => {
     if (isPlaying) {
       audio.current.pause();
@@ -23,13 +22,16 @@ const useAudio = () => {
     setIsPlaying(!isPlaying);
   };
 
-  // 3. Saltar a un punto específico (Seek)
   const seek = (time) => {
     audio.current.currentTime = time;
     setCurrentTime(time);
   };
 
-  // 4. Efecto para manejar eventos del Audio
+  const setVolume = (vol) => {
+    audio.current.volume = vol;
+    setVolumeState(vol);
+  };
+
   useEffect(() => {
     const audioRef = audio.current;
 
@@ -37,12 +39,10 @@ const useAudio = () => {
     const updateDuration = () => setDuration(audioRef.duration);
     const handleEnd = () => setIsPlaying(false);
 
-    // Escuchadores de eventos nativos
     audioRef.addEventListener('timeupdate', updateTime);
     audioRef.addEventListener('loadedmetadata', updateDuration);
     audioRef.addEventListener('ended', handleEnd);
 
-    // Limpieza al desmontar el componente
     return () => {
       audioRef.removeEventListener('timeupdate', updateTime);
       audioRef.removeEventListener('loadedmetadata', updateDuration);
@@ -54,9 +54,11 @@ const useAudio = () => {
     isPlaying,
     currentTime,
     duration,
+    volume,
     togglePlayPause,
     loadTrack,
     seek,
+    setVolume,
   };
 };
 
