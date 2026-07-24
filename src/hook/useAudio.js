@@ -6,9 +6,12 @@ const useAudio = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(1);
+  const isPlayingRef = useRef(false);
 
   const loadTrack = useCallback((url) => {
     audio.current.pause();
+    setIsPlaying(false);
+    isPlayingRef.current = false;
     audio.current.src = url;
     audio.current.load();
     setCurrentTime(0);
@@ -17,18 +20,25 @@ const useAudio = () => {
 
   const togglePlayPause = useCallback(() => {
     const audioEl = audio.current;
-    if (isPlaying) {
+    if (isPlayingRef.current) {
       audioEl.pause();
       setIsPlaying(false);
+      isPlayingRef.current = false;
     } else {
       const playPromise = audioEl.play();
       if (playPromise !== undefined) {
         playPromise
-          .then(() => setIsPlaying(true))
-          .catch(() => {});
+          .then(() => {
+            setIsPlaying(true);
+            isPlayingRef.current = true;
+          })
+          .catch(() => {
+            setIsPlaying(false);
+            isPlayingRef.current = false;
+          });
       }
     }
-  }, [isPlaying]);
+  }, []);
 
   const seek = useCallback((time) => {
     audio.current.currentTime = time;
