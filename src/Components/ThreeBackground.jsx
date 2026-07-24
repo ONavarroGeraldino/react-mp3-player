@@ -16,15 +16,15 @@ const ThreeBackground = () => {
       0.1,
       1000
     );
-    camera.position.z = 4;
+    camera.position.z = 3.5;
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    const pointCount = 2000;
-    const radius = 1.5;
+    const pointCount = 3000;
+    const radius = 2.5;
     const positions = new Float32Array(pointCount * 3);
     const colors = new Float32Array(pointCount * 3);
 
@@ -52,7 +52,7 @@ const ThreeBackground = () => {
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 0.015,
+      size: 0.02,
       vertexColors: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
