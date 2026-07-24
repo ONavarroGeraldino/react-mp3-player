@@ -59,11 +59,11 @@ const ThreeBackground = ({ style = 0, accentColor = '#ff2d95', size = 'large' })
     scene.add(sphere);
 
     let animationId;
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animationId = requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
+      const time = (performance.now() - startTime) / 1000;
 
       const scale = 1 + Math.sin(time * 1.2) * 0.15;
       sphere.scale.setScalar(scale);
