@@ -19,7 +19,7 @@ const Equalizer = ({ isPlaying }) => {
       {bars.map((bar, i) => (
         <span
           key={i}
-          className="block w-[5px] rounded-none bg-[#00ff41] transition-[height] duration-100"
+          className="block w-[5px] rounded-none bg-[#ff2d95] transition-[height] duration-100"
           style={{
             height: isPlaying ? undefined : '3px',
             animation: isPlaying
@@ -32,9 +32,9 @@ const Equalizer = ({ isPlaying }) => {
       ))}
       <style>{`
         @keyframes winamp-eq {
-          0% { height: 3px; background: #00ff41; }
-          20% { height: var(--eq-height); background: #39ff14; }
-          100% { height: 3px; background: #00cc34; }
+          0% { height: 3px; background: #ff2d95; }
+          20% { height: var(--eq-height); background: #ff69b4; }
+          100% { height: 3px; background: #cc2477; }
         }
       `}</style>
     </div>

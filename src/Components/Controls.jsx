@@ -41,7 +41,7 @@ const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, o
         <button
           onClick={() => setIsShuffled(!isShuffled)}
           className={`btn-bevel w-8 h-7 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52] ${
-            isShuffled ? 'text-[#00ff41] neon-glow' : 'text-[#64748b]'
+            isShuffled ? 'text-[#ff2d95] neon-glow' : 'text-[#64748b]'
           }`}
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -64,7 +64,7 @@ const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, o
         {/* Play/Pause */}
         <button
           onClick={onPlayPause}
-          className="btn-bevel w-14 h-14 flex items-center justify-center bg-gradient-to-b from-[#00ff55] to-[#00aa33] hover:from-[#33ff77] hover:to-[#00cc44] text-black neon-glow"
+          className="btn-bevel w-14 h-14 flex items-center justify-center bg-gradient-to-b from-[#ff2d95] to-[#cc0052] hover:from-[#ff4da6] hover:to-[#e6005c] text-white neon-glow"
         >
           {isPlaying ? (
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none">
@@ -90,7 +90,7 @@ const Controls = ({ isPlaying, volume, onPlayPause, onSkipBack, onSkipForward, o
         <button
           onClick={cycleRepeat}
           className={`btn-bevel w-8 h-7 flex items-center justify-center bg-[#2a2a3a] hover:bg-[#3d3d52] relative ${
-            repeatMode > 0 ? 'text-[#00ff41] neon-glow' : 'text-[#64748b]'
+            repeatMode > 0 ? 'text-[#ff2d95] neon-glow' : 'text-[#64748b]'
           }`}
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

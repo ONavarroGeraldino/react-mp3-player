@@ -5,10 +5,10 @@
   --color-retro-surface: #12121d;
   --color-retro-metal: #2a2a3a;
   --color-retro-metal-light: #3d3d52;
-  --color-retro-neon: #00ff41;
-  --color-retro-neon-dim: #00cc34;
-  --color-retro-lcd: #0d1b0d;
-  --color-retro-lcd-text: #33ff55;
+  --color-retro-neon: #ff2d95;
+  --color-retro-neon-dim: #cc2477;
+  --color-retro-lcd: #1a0d14;
+  --color-retro-lcd-text: #ff2d95;
   --color-retro-chrome: linear-gradient(180deg, #4a4a5e 0%, #2a2a3a 50%, #1a1a2e 100%);
   --font-retro: "Press Start 2P", monospace;
   --font-body: "Inter", sans-serif;
@@ -55,12 +55,12 @@ input[type="range"].winamp-progress {
   appearance: none;
   width: 100%;
   height: 8px;
-  background: #0d1b0d;
-  border: 1px solid #2a3d2a;
+  background: #1a0d14;
+  border: 1px solid #3d1a2a;
   border-radius: 0;
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
   cursor: pointer;
-  background-image: linear-gradient(90deg, #00ff41, #00cc34);
+  background-image: linear-gradient(90deg, #ff2d95, #ff0066);
   background-size: var(--progress, 0%) 100%;
   background-repeat: no-repeat;
 }
@@ -83,7 +83,7 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
 .lcd-text {
   font-family: var(--font-retro);
   color: var(--color-retro-lcd-text);
-  text-shadow: 0 0 6px rgba(0,255,65,0.4);
+  text-shadow: 0 0 6px rgba(255,45,149,0.4);
   letter-spacing: 2px;
 }
 
@@ -117,11 +117,11 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
 
 /* Neon glow */
 .neon-glow {
-  box-shadow: 0 0 12px rgba(0,255,65,0.3), 0 0 4px rgba(0,255,65,0.5);
+  box-shadow: 0 0 12px rgba(255,45,149,0.3), 0 0 4px rgba(255,45,149,0.5);
 }
 
 .neon-glow:hover {
-  box-shadow: 0 0 20px rgba(0,255,65,0.5), 0 0 8px rgba(0,255,65,0.7);
+  box-shadow: 0 0 20px rgba(255,45,149,0.5), 0 0 8px rgba(255,45,149,0.7);
 }
 
 /* Scrollbar */
@@ -141,6 +141,6 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
 
 /* Selection */
 ::selection {
-  background: rgba(0,255,65,0.3);
+  background: rgba(255,45,149,0.3);
   color: #fff;
 }

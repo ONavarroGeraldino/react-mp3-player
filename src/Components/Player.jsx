@@ -136,7 +136,7 @@ const Player = () => {
   return (
     <main
       className={`min-h-[100dvh] w-full flex items-center justify-center p-4 bg-[#08080f] relative overflow-hidden ${
-        isDragOver ? 'after:fixed after:inset-0 after:z-50 after:border-[3px] after:border-dashed after:border-[#00ff41] after:m-4 after:flex after:items-center after:justify-center after:content-["DROP_MP3_HERE"] after:text-[#00ff41] after:font-["Press_Start_2P"] after:text-sm after:bg-black/80' : ''
+        isDragOver ? 'after:fixed after:inset-0 after:z-50 after:border-[3px] after:border-dashed after:border-[#ff2d95] after:m-4 after:flex after:items-center after:justify-center after:content-["DROP_MP3_HERE"] after:text-[#ff2d95] after:font-["Press_Start_2P"] after:text-sm after:bg-black/80' : ''
       }`}
     >
       {/* Scanline overlay */}
@@ -147,7 +147,7 @@ const Player = () => {
       />
 
       {toast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 btn-bevel bg-[#1a1a2e] px-6 py-3 border border-[#3d3d52] text-[#00ff41] text-[10px] font-bold uppercase tracking-widest lcd-text animate-[fadeIn_0.2s_ease-out]">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 btn-bevel bg-[#1a1a2e] px-6 py-3 border border-[#3d3d52] text-[#ff2d95] text-[10px] font-bold uppercase tracking-widest lcd-text animate-[fadeIn_0.2s_ease-out]">
           {toast}
         </div>
       )}
@@ -156,7 +156,7 @@ const Player = () => {
         {/* Title bar */}
         <div className="bg-gradient-to-b from-[#3d3d52] to-[#2a2a3a] px-3 py-1.5 flex items-center justify-between border-b border-[#1a1a2e]">
           <div className="flex items-center gap-2">
-            <span className="text-[#00ff41] text-[10px] font-bold uppercase tracking-[3px] lcd-text">MP3_PLAYER v1.0</span>
+            <span className="text-[#ff2d95] text-[10px] font-bold uppercase tracking-[3px] lcd-text">MP3_PLAYER v1.0</span>
           </div>
           <div className="flex items-center gap-1.5">
             {tracks.length > 0 && (
@@ -180,7 +180,7 @@ const Player = () => {
           <FileUploader onFilesUpload={handleNewFiles} isDragOver={isDragOver} />
 
           {/* LCD Display area */}
-          <div className="bg-[#0d1b0d] border-2 border-[#2a3d2a] p-4 space-y-3 shadow-[inset_0_2px_8px_rgba(0,0,0,0.6)]">
+          <div className="bg-[#1a0d14] border-2 border-[#2a1a3d] p-4 space-y-3 shadow-[inset_0_2px_8px_rgba(0,0,0,0.6)]">
             {/* Spectrum analyzer / Equalizer */}
             <Equalizer isPlaying={isPlaying} />
 
@@ -190,8 +190,8 @@ const Player = () => {
                 {currentTrackName.replace(/ /g, '_').toUpperCase()}
               </h2>
               <div className="flex items-center justify-center gap-2">
-                <span className={`w-1.5 h-1.5 rounded-none ${isPlaying ? 'bg-[#00ff41] neon-glow' : 'bg-[#2a3d2a]'}`} />
-                <span className="text-[#00ff41] text-[8px] font-bold uppercase tracking-[2px] font-[Press_Start_2P]">
+                <span className={`w-1.5 h-1.5 rounded-none ${isPlaying ? 'bg-[#ff2d95] neon-glow' : 'bg-[#2a1a3d]'}`} />
+                <span className="text-[#ff2d95] text-[8px] font-bold uppercase tracking-[2px] font-[Press_Start_2P]">
                   {tracks.length === 0 ? 'STAND_BY' : isPlaying ? 'PLAYING >>' : 'PAUSED ||'}
                 </span>
               </div>

@@ -19,12 +19,12 @@ const FileUploader = ({ onFilesUpload, isDragOver }) => {
   };
 
   return (
-    <div className={`w-full ${isDragOver ? 'ring-2 ring-[#00ff41]' : ''}`}>
+    <div className={`w-full ${isDragOver ? 'ring-2 ring-[#ff2d95]' : ''}`}>
       <label
         htmlFor="file-upload"
         className={`btn-bevel flex items-center justify-center gap-2 py-2.5 px-4 w-full cursor-pointer transition-all duration-150 ${
           isDragOver
-            ? 'bg-[#0a1a0a] text-[#00ff41]'
+            ? 'bg-[#1a0a14] text-[#ff2d95]'
             : 'bg-[#1a1a2e] hover:bg-[#222238] text-[#94a3b8] hover:text-[#c8c8d0]'
         }`}
       >
