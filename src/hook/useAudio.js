@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 const useAudio = () => {
   const audio = useRef(new Audio());
@@ -7,30 +7,38 @@ const useAudio = () => {
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(1);
 
-  const loadTrack = (url) => {
+  const loadTrack = useCallback((url) => {
+    audio.current.pause();
     audio.current.src = url;
     audio.current.load();
-    if (isPlaying) audio.current.play();
-  };
+    setCurrentTime(0);
+    setDuration(0);
+  }, []);
 
-  const togglePlayPause = () => {
+  const togglePlayPause = useCallback(() => {
+    const audioEl = audio.current;
     if (isPlaying) {
-      audio.current.pause();
+      audioEl.pause();
+      setIsPlaying(false);
     } else {
-      audio.current.play();
+      const playPromise = audioEl.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsPlaying(true))
+          .catch(() => {});
+      }
     }
-    setIsPlaying(!isPlaying);
-  };
+  }, [isPlaying]);
 
-  const seek = (time) => {
+  const seek = useCallback((time) => {
     audio.current.currentTime = time;
     setCurrentTime(time);
-  };
+  }, []);
 
-  const setVolume = (vol) => {
+  const setVolume = useCallback((vol) => {
     audio.current.volume = vol;
     setVolumeState(vol);
-  };
+  }, []);
 
   useEffect(() => {
     const audioRef = audio.current;
