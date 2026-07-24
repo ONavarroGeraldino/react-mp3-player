@@ -2,10 +2,6 @@ import { put, list, del } from '@vercel/blob';
 
 const PLAYLIST_KEY = 'playlist.json';
 
-export const config = {
-  runtime: 'nodejs',
-};
-
 export default async function handler(req) {
   try {
     if (req.method === 'GET') {
