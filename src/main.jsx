@@ -7,11 +7,8 @@ createRoot(document.getElementById('root')).render(
 )
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    for (const reg of registrations) {
-      reg.unregister();
-    }
-  }).finally(() => {
-    navigator.serviceWorker.register('/sw.js?v=2').catch(() => {});
+  navigator.serviceWorker.getRegistrations().then(async (registrations) => {
+    await Promise.all(registrations.map(r => r.unregister()));
+    navigator.serviceWorker.register('/sw.js?v=3').catch(() => {});
   });
 }
