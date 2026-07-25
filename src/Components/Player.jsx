@@ -114,6 +114,7 @@ const Player = () => {
   const [style, setStyle] = useState(0);
   const [loading, setLoading] = useState(true);
   const [sphereReady, setSphereReady] = useState(false);
+  const [reloadTrigger, setReloadTrigger] = useState(0);
   const dragCounter = useRef(0);
   const toastTimer = useRef(null);
   const isLoaded = useRef(false);
@@ -136,7 +137,7 @@ const Player = () => {
     if (tracks.length > 0) {
       loadTrack(tracks[currentTrackIndex].url);
     }
-  }, [currentTrackIndex, tracks]);
+  }, [currentTrackIndex, reloadTrigger]);
 
   const showToast = useCallback((message) => {
     setToast(message);
@@ -180,8 +181,12 @@ const Player = () => {
   }, [tracks]);
 
   const handleNewFiles = (newTracks) => {
+    const wasEmpty = tracks.length === 0;
     setTracks(prevTracks => [...prevTracks, ...newTracks]);
     setShowTracklist(true);
+    if (wasEmpty) {
+      setReloadTrigger(prev => prev + 1);
+    }
     showToast(`${newTracks.length} TRACK${newTracks.length > 1 ? 'S' : ''} ADDED`);
   };
 
