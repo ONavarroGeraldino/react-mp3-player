@@ -8,6 +8,9 @@ const InstallButton = () => {
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    if (!isAndroid) return;
+
     if (window.matchMedia('(display-mode: standalone)').matches) {
       setInstalled(true);
       return;
