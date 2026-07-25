@@ -1,29 +1,19 @@
 import { useState } from 'react';
 import { saveToIndexedDB } from '../utils/storage';
-import { uploadFile as uploadToBlob } from '../utils/blobClient';
 
 const FileUploader = ({ onFilesUpload, isDragOver, accentColor, onToast }) => {
   const [uploading, setUploading] = useState(false);
 
   const uploadFile = async (file) => {
-    try {
-      const data = await uploadToBlob(file);
-      return {
-        name: data.name,
-        url: data.url,
-        pathname: data.pathname,
-      };
-    } catch {
-      const id = 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-      const name = file.name.replace(/\.[^/.]+$/, '');
-      await saveToIndexedDB(id, file, name);
-      return {
-        name,
-        url: URL.createObjectURL(file),
-        local: true,
-        localId: id,
-      };
-    }
+    const id = 'track_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const name = file.name.replace(/\.[^/.]+$/, '');
+    await saveToIndexedDB(id, file, name);
+    return {
+      name,
+      url: URL.createObjectURL(file),
+      local: true,
+      localId: id,
+    };
   };
 
   const handleFileChange = async (e) => {
@@ -35,12 +25,9 @@ const FileUploader = ({ onFilesUpload, isDragOver, accentColor, onToast }) => {
     setUploading(true);
 
     const newTracks = [];
-    let cloudCount = 0;
-
     for (const file of audioFiles) {
       try {
         const track = await uploadFile(file);
-        if (!track.local) cloudCount++;
         newTracks.push(track);
       } catch (err) {
         console.error('Upload error for', file.name, err);
@@ -49,11 +36,7 @@ const FileUploader = ({ onFilesUpload, isDragOver, accentColor, onToast }) => {
 
     if (newTracks.length > 0) {
       onFilesUpload(newTracks);
-      if (cloudCount === 0 && newTracks.length > 0) {
-        onToast?.('LOCAL ONLY - NO CLOUD SYNC');
-      } else if (cloudCount === newTracks.length) {
-        onToast?.('SYNCED TO CLOUD');
-      }
+      onToast?.(`${newTracks.length} TRACK${newTracks.length > 1 ? 'S' : ''} ADDED`);
     }
 
     setUploading(false);
@@ -75,7 +58,7 @@ const FileUploader = ({ onFilesUpload, isDragOver, accentColor, onToast }) => {
               <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
               <path d="M12 2a10 10 0 0 1 10 10" strokeOpacity="1" />
             </svg>
-            <span className="text-xs font-bold uppercase tracking-wider">UPLOADING...</span>
+            <span className="text-xs font-bold uppercase tracking-wider">SAVING...</span>
           </>
         ) : (
           <>

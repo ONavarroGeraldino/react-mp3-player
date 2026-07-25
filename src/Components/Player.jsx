@@ -8,8 +8,7 @@ import ThreeBackground from './ThreeBackground';
 import CornerViz from './CornerViz';
 import StyleSwitcher from './StyleSwitcher';
 import useAudio from '../hook/useAudio';
-import { getAllFromIndexedDB, loadFromIndexedDB, saveToIndexedDB, deleteFromIndexedDB, clearIndexedDB } from '../utils/storage';
-import { savePlaylist, loadPlaylist, deleteBlob, uploadFile as uploadToBlob } from '../utils/blobClient';
+import { loadFromIndexedDB, saveToIndexedDB, deleteFromIndexedDB, clearIndexedDB } from '../utils/storage';
 
 const themes = {
   0: {
@@ -144,23 +143,12 @@ const Player = () => {
   useEffect(() => {
     const loadPlaylistData = async () => {
       try {
-        const data = await loadPlaylist();
-        if (data.tracks && data.tracks.length > 0) {
-          setTracks(data.tracks);
-          localStorage.setItem('mp3_playlist', JSON.stringify(data.tracks));
-          setLoading(false);
-          isLoaded.current = true;
-          return;
-        }
-      } catch {}
-
-      try {
         const saved = localStorage.getItem('mp3_playlist');
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
             const restored = await Promise.all(parsed.map(async (t) => {
-              if (t.local && t.localId) {
+              if (t.localId) {
                 const entry = await loadFromIndexedDB(t.localId);
                 if (entry && entry.file) {
                   return { ...t, url: URL.createObjectURL(entry.file) };
@@ -170,9 +158,7 @@ const Player = () => {
               return t;
             }));
             const valid = restored.filter(Boolean);
-            if (valid.length > 0) {
-              setTracks(valid);
-            }
+            if (valid.length > 0) setTracks(valid);
           }
         }
       } catch {}
@@ -187,8 +173,6 @@ const Player = () => {
     if (!isLoaded.current) return;
 
     localStorage.setItem('mp3_playlist', JSON.stringify(tracks));
-
-    savePlaylist(tracks).catch(() => {});
   }, [tracks]);
 
   const handleNewFiles = (newTracks) => {
@@ -211,19 +195,11 @@ const Player = () => {
     if (removed.localId) {
       deleteFromIndexedDB(removed.localId).catch(() => {});
     }
-    if (removed.url && !removed.local) {
-      deleteBlob(removed.url).catch(() => {});
-    }
     showToast(`"${removed.name}" REMOVED`);
   };
 
   const handleClearAll = () => {
     clearIndexedDB().catch(() => {});
-    tracks.forEach(track => {
-      if (track.url && !track.local) {
-        deleteBlob(track.url).catch(() => {});
-      }
-    });
     localStorage.removeItem('mp3_playlist');
     setTracks([]);
     setCurrentTrackIndex(0);
@@ -272,15 +248,10 @@ const Player = () => {
       if (audioFiles.length > 0) {
         const newTracks = [];
         for (const file of audioFiles) {
-          try {
-            const result = await uploadToBlob(file);
-            newTracks.push({ name: result.name, url: result.url, pathname: result.pathname });
-          } catch {
-            const id = 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-            const name = file.name.replace(/\.[^/.]+$/, '');
-            await saveToIndexedDB(id, file, name);
-            newTracks.push({ name, url: URL.createObjectURL(file), local: true, localId: id });
-          }
+          const id = 'track_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+          const name = file.name.replace(/\.[^/.]+$/, '');
+          await saveToIndexedDB(id, file, name);
+          newTracks.push({ name, url: URL.createObjectURL(file), local: true, localId: id });
         }
         if (newTracks.length > 0) {
           handleNewFiles(newTracks);
