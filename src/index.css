@@ -109,6 +109,7 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
     0 8px 40px rgba(0,0,0,0.7),
     inset 0 1px 0 rgba(255,255,255,0.06),
     inset 0 -1px 0 rgba(0,0,0,0.4);
+  overflow: hidden;
 }
 
 /* Style 2: Glass Morphism */
@@ -122,6 +123,7 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
     0 8px 40px rgba(0,0,0,0.5),
     inset 0 1px 0 rgba(255,255,255,0.08),
     inset 0 -1px 0 rgba(0,0,0,0.2);
+  overflow: hidden;
 }
 
 /* Style 3: Neon Dark */
@@ -133,6 +135,7 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
     0 0 20px rgba(0, 240, 255, 0.08),
     0 8px 40px rgba(0,0,0,0.7),
     inset 0 1px 0 rgba(0, 240, 255, 0.05);
+  overflow: hidden;
 }
 
 /* Style 4: Retro Amber */
@@ -146,6 +149,7 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
     0 8px 40px rgba(0,0,0,0.7),
     inset 0 1px 0 rgba(255,255,255,0.04),
     inset 0 -1px 0 rgba(0,0,0,0.4);
+  overflow: hidden;
 }
 
 /* Style 5: Chrome / iPod */
@@ -158,6 +162,7 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
     0 8px 40px rgba(0,0,0,0.6),
     inset 0 1px 0 rgba(255,255,255,0.6),
     inset 0 -1px 0 rgba(0,0,0,0.2);
+  overflow: hidden;
 }
 
 /* Style 6: Lava */
@@ -172,6 +177,7 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
     0 8px 40px rgba(0,0,0,0.7),
     inset 0 1px 0 rgba(255,255,255,0.03),
     inset 0 -1px 0 rgba(0,0,0,0.4);
+  overflow: hidden;
 }
 
 /* Screen bezel */
@@ -182,6 +188,7 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
   box-shadow:
     inset 0 2px 8px rgba(0,0,0,0.6),
     0 0 0 1px rgba(0,0,0,0.3);
+  overflow: hidden;
 }
 
 /* Winamp bevel button */

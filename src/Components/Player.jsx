@@ -312,7 +312,7 @@ const Player = () => {
         </div>
       )}
 
-      <div className={`${t.caseClass} w-full max-w-[400px] relative z-10 transition-all duration-500`}>
+      <div className={`${t.caseClass} w-full max-w-[400px] relative z-10 transition-all duration-500 overflow-hidden`}>
         {loading && (
           <div className="flex flex-col items-center justify-center gap-4 py-20">
             <div className="relative w-10 h-10">
@@ -361,7 +361,7 @@ const Player = () => {
           <FileUploader onFilesUpload={handleNewFiles} isDragOver={isDragOver} accentColor={t.accent} onToast={showToast} />
 
           {/* LCD Display area */}
-          <div className="screen-bezel p-4 space-y-3 relative" style={{ background: t.lcdBg, borderColor: t.lcdBorder }}>
+          <div className="screen-bezel p-4 space-y-3 relative overflow-hidden" style={{ background: t.lcdBg, borderColor: t.lcdBorder }}>
             <CornerViz isPlaying={isPlaying} accentColor={t.accent} />
             <SpectrumViz freqData={freqData} accentColor={t.accent} accentRgb={t.accentRgb} />
 
