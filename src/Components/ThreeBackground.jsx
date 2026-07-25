@@ -146,33 +146,33 @@ const ThreeBackground = ({ accentColor = '#ff2d95', size = 'large', shape = 0, o
 
     const animate = () => {
       animationId = requestAnimationFrame(animate);
-      const time = (performance.now() - startTime) / 1000;
+      const t = (performance.now() - startTime) / 1000;
 
       switch (shape) {
         case 0: {
-          mesh.scale.setScalar(1 + Math.sin(time * 1.2) * 0.15);
-          mesh.rotation.y += 0.002;
-          mesh.rotation.x += 0.001;
+          mesh.scale.setScalar(1 + Math.sin(t * 1.2) * 0.15);
+          mesh.rotation.y = t * 0.15;
+          mesh.rotation.x = t * 0.06;
           break;
         }
         case 1: {
-          mesh.rotation.y += 0.003;
-          mesh.rotation.x += 0.002;
-          mesh.scale.setScalar(1 + Math.sin(time * 1.5) * 0.08);
+          mesh.rotation.y = t * 0.2;
+          mesh.rotation.x = t * 0.12;
+          mesh.scale.setScalar(1 + Math.sin(t * 1.5) * 0.08);
           break;
         }
         case 2: {
-          mesh.rotation.y += 0.003;
-          mesh.position.y = Math.sin(time * 0.8) * 0.3;
+          mesh.rotation.y = t * 0.2;
+          mesh.position.y = Math.sin(t * 0.8) * 0.3;
           break;
         }
         case 3: {
-          mesh.rotation.z += 0.008;
-          mesh.scale.setScalar(1 + Math.sin(time * 0.6) * 0.1);
+          mesh.rotation.z = t * 0.5;
+          mesh.scale.setScalar(1 + Math.sin(t * 0.6) * 0.1);
           break;
         }
         case 4: {
-          mesh.rotation.y += 0.001;
+          mesh.rotation.y = t * 0.08;
           mesh.rotation.x = 0.4;
           const waveGeo = mesh.geometry;
           const posAttr = waveGeo.getAttribute('position');
@@ -180,16 +180,16 @@ const ThreeBackground = ({ accentColor = '#ff2d95', size = 'large', shape = 0, o
             for (let i = 0; i < posAttr.count; i++) {
               const x = posAttr.getX(i);
               const z = posAttr.getZ(i);
-              posAttr.setY(i, Math.sin(x * 1.5 + time * 2) * Math.cos(z * 1.5 + time * 1.5) * 0.6);
+              posAttr.setY(i, Math.sin(x * 1.5 + t * 2) * Math.cos(z * 1.5 + t * 1.5) * 0.6);
             }
             posAttr.needsUpdate = true;
           }
           break;
         }
         case 5: {
-          mesh.rotation.y += 0.003;
-          mesh.rotation.x += 0.002;
-          mesh.rotation.z += 0.001;
+          mesh.rotation.y = t * 0.2;
+          mesh.rotation.x = t * 0.12;
+          mesh.rotation.z = t * 0.08;
           break;
         }
       }
