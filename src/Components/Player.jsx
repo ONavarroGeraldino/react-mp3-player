@@ -326,7 +326,7 @@ const Player = () => {
         </div>
       )}
 
-      <div className={`${t.caseClass} w-full max-w-[400px] relative z-10 transition-all duration-500 overflow-hidden`}>
+      <div className={`${t.caseClass} w-full max-w-[400px] relative z-10 transition-all duration-500 overflow-hidden`} style={{ opacity: 0.9 }}>
         {loading && (
           <div className="flex flex-col items-center justify-center gap-4 py-20">
             <div className="relative w-10 h-10">
