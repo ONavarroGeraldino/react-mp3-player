@@ -7,5 +7,11 @@ createRoot(document.getElementById('root')).render(
 )
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {});
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (const reg of registrations) {
+      reg.unregister();
+    }
+  }).finally(() => {
+    navigator.serviceWorker.register('/sw.js?v=2').catch(() => {});
+  });
 }
