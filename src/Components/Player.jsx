@@ -8,7 +8,8 @@ import ThreeBackground from './ThreeBackground';
 import CornerViz from './CornerViz';
 import StyleSwitcher from './StyleSwitcher';
 import useAudio from '../hook/useAudio';
-import { getAllFromIndexedDB, loadFromIndexedDB, deleteFromIndexedDB, clearIndexedDB } from '../utils/storage';
+import { getAllFromIndexedDB, loadFromIndexedDB, saveToIndexedDB, deleteFromIndexedDB, clearIndexedDB } from '../utils/storage';
+import { savePlaylist, loadPlaylist, deleteBlob, uploadFile as uploadToBlob } from '../utils/blobClient';
 
 const themes = {
   0: {
@@ -141,29 +142,17 @@ const Player = () => {
   }, []);
 
   useEffect(() => {
-    const loadPlaylist = async () => {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-
+    const loadPlaylistData = async () => {
       try {
-        const res = await fetch('/api/playlist', { signal: controller.signal });
-        clearTimeout(timeout);
-        if (res.ok) {
-          const contentType = res.headers.get('content-type') || '';
-          if (contentType.includes('application/json')) {
-            const data = await res.json();
-            if (data.tracks && data.tracks.length > 0) {
-              setTracks(data.tracks);
-              localStorage.setItem('mp3_playlist', JSON.stringify(data.tracks));
-              setLoading(false);
-              isLoaded.current = true;
-              return;
-            }
-          }
+        const data = await loadPlaylist();
+        if (data.tracks && data.tracks.length > 0) {
+          setTracks(data.tracks);
+          localStorage.setItem('mp3_playlist', JSON.stringify(data.tracks));
+          setLoading(false);
+          isLoaded.current = true;
+          return;
         }
-      } catch {} finally {
-        clearTimeout(timeout);
-      }
+      } catch {}
 
       try {
         const saved = localStorage.getItem('mp3_playlist');
@@ -191,7 +180,7 @@ const Player = () => {
       setLoading(false);
       isLoaded.current = true;
     };
-    loadPlaylist();
+    loadPlaylistData();
   }, []);
 
   useEffect(() => {
@@ -199,15 +188,7 @@ const Player = () => {
 
     localStorage.setItem('mp3_playlist', JSON.stringify(tracks));
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-
-    fetch('/api/playlist', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tracks: tracks.filter(t => !t.local) }),
-      signal: controller.signal,
-    }).catch(() => {}).finally(() => clearTimeout(timeout));
+    savePlaylist(tracks).catch(() => {});
   }, [tracks]);
 
   const handleNewFiles = (newTracks) => {
@@ -230,12 +211,8 @@ const Player = () => {
     if (removed.localId) {
       deleteFromIndexedDB(removed.localId).catch(() => {});
     }
-    if (removed.url) {
-      fetch('/api/playlist', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: removed.url }),
-      }).catch(() => {});
+    if (removed.url && !removed.local) {
+      deleteBlob(removed.url).catch(() => {});
     }
     showToast(`"${removed.name}" REMOVED`);
   };
@@ -243,12 +220,8 @@ const Player = () => {
   const handleClearAll = () => {
     clearIndexedDB().catch(() => {});
     tracks.forEach(track => {
-      if (track.url) {
-        fetch('/api/playlist', {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: track.url }),
-        }).catch(() => {});
+      if (track.url && !track.local) {
+        deleteBlob(track.url).catch(() => {});
       }
     });
     localStorage.removeItem('mp3_playlist');
@@ -300,20 +273,13 @@ const Player = () => {
         const newTracks = [];
         for (const file of audioFiles) {
           try {
-            const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 15000);
-            const formData = new FormData();
-            formData.append('file', file);
-            const res = await fetch('/api/upload', { method: 'POST', body: formData, signal: controller.signal });
-            clearTimeout(timeout);
-            if (res.ok) {
-              const data = await res.json();
-              newTracks.push({ name: data.name, url: data.url, pathname: data.pathname });
-            } else {
-              newTracks.push({ name: file.name.replace(/\.[^/.]+$/, ''), url: URL.createObjectURL(file), local: true });
-            }
+            const result = await uploadToBlob(file);
+            newTracks.push({ name: result.name, url: result.url, pathname: result.pathname });
           } catch {
-            newTracks.push({ name: file.name.replace(/\.[^/.]+$/, ''), url: URL.createObjectURL(file), local: true });
+            const id = 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+            const name = file.name.replace(/\.[^/.]+$/, '');
+            await saveToIndexedDB(id, file, name);
+            newTracks.push({ name, url: URL.createObjectURL(file), local: true, localId: id });
           }
         }
         if (newTracks.length > 0) {

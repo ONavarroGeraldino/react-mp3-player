@@ -1,38 +1,19 @@
 import { useState } from 'react';
 import { saveToIndexedDB } from '../utils/storage';
+import { uploadFile as uploadToBlob } from '../utils/blobClient';
 
 const FileUploader = ({ onFilesUpload, isDragOver, accentColor, onToast }) => {
   const [uploading, setUploading] = useState(false);
 
   const uploadFile = async (file) => {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
-
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeout);
-
-      if (!res.ok) throw new Error('Upload failed');
-
-      const contentType = res.headers.get('content-type') || '';
-      if (!contentType.includes('application/json')) throw new Error('Invalid response');
-
-      const data = await res.json();
+      const data = await uploadToBlob(file);
       return {
         name: data.name,
         url: data.url,
         pathname: data.pathname,
       };
     } catch {
-      clearTimeout(timeout);
       const id = 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2);
       const name = file.name.replace(/\.[^/.]+$/, '');
       await saveToIndexedDB(id, file, name);
