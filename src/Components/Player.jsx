@@ -11,6 +11,7 @@ import StyleSwitcher from './StyleSwitcher';
 import ShapeSwitcher from './ShapeSwitcher';
 import GifToggle from './GifToggle';
 import GifFrenzy from './GifFrenzy';
+import InstallButton from './InstallButton';
 import useAudio from '../hook/useAudio';
 import { loadFromIndexedDB, saveToIndexedDB, deleteFromIndexedDB, clearIndexedDB } from '../utils/storage';
 import { extractCoverFromFile } from '../utils/coverExtractor';
@@ -477,6 +478,8 @@ const Player = () => {
         </>
         )}
       </div>
+
+      <InstallButton />
 
       <style>{`
         @keyframes fadeIn {
