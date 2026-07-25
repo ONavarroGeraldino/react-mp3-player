@@ -8,6 +8,7 @@ import ThreeBackground from './ThreeBackground';
 import CornerViz from './CornerViz';
 import SpectrumViz from './SpectrumViz';
 import StyleSwitcher from './StyleSwitcher';
+import ShapeSwitcher from './ShapeSwitcher';
 import useAudio from '../hook/useAudio';
 import { loadFromIndexedDB, saveToIndexedDB, deleteFromIndexedDB, clearIndexedDB } from '../utils/storage';
 import { extractCoverFromFile } from '../utils/coverExtractor';
@@ -112,6 +113,7 @@ const Player = () => {
   const [toast, setToast] = useState(null);
   const [showTracklist, setShowTracklist] = useState(false);
   const [style, setStyle] = useState(0);
+  const [shape, setShape] = useState(0);
   const [loading, setLoading] = useState(true);
   const [sphereReady, setSphereReady] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(0);
@@ -305,9 +307,10 @@ const Player = () => {
       className={`min-h-[100dvh] w-full flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-500`}
       style={{ backgroundColor: t.bgColor }}
     >
-      <ThreeBackground style={style} accentColor={t.sphereColor} size={t.sphereSize} onLoad={() => setSphereReady(true)} />
+      <ThreeBackground style={style} accentColor={t.sphereColor} shape={shape} size={t.sphereSize} onLoad={() => setSphereReady(true)} />
 
       <StyleSwitcher currentStyle={style} onChange={setStyle} />
+      <ShapeSwitcher currentShape={shape} onChange={setShape} />
 
       {/* Scanline overlay */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03]"
