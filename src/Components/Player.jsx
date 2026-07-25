@@ -366,7 +366,8 @@ const Player = () => {
             <SpectrumViz freqData={freqData} accentColor={t.accent} accentRgb={t.accentRgb} />
 
             {/* Cover art + track info */}
-            <div className="flex items-center gap-3">
+            <div className="flex justify-center">
+            <div className="flex items-center gap-3 max-w-full">
               {tracks[currentTrackIndex]?.cover ? (
                 <img
                   src={tracks[currentTrackIndex].cover}
@@ -396,7 +397,8 @@ const Player = () => {
                   style={{ color: t.lcdText }}>
                   {tracks.length === 0 ? 'STAND_BY' : isPlaying ? 'PLAYING >>' : 'PAUSED ||'}
                 </span>
-              </div>
+            </div>
+            </div>
             </div>
             </div>
 
