@@ -1,4 +1,4 @@
-const CACHE_NAME = 'music-mp3-v1';
+const CACHE_NAME = 'music-mp3-v2';
 const ASSETS = [
   '/',
   '/index.html',
@@ -30,6 +30,9 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+
+  if (event.request.method !== 'GET') return;
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
 
   if (url.origin === 'https://api.giphy.com' || url.origin === 'https://media.giphy.com') {
     return;
