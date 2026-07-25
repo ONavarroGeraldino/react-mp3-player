@@ -371,17 +371,17 @@ const Player = () => {
                 <img
                   src={tracks[currentTrackIndex].cover}
                   alt="cover"
-                  className="w-10 h-10 object-cover border border-[#1a1a28]"
+                  className="w-10 h-10 object-cover border border-[#1a1a28] flex-shrink-0"
                 />
               ) : (
-                <div className="w-10 h-10 flex items-center justify-center bg-[#0d0d18] border border-[#1a1a28] text-[#3d3d52]">
+                <div className="w-10 h-10 flex flex-shrink-0 items-center justify-center bg-[#0d0d18] border border-[#1a1a28] text-[#3d3d52]">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
                   </svg>
                 </div>
               )}
-              <div className="text-center flex-1 space-y-1">
-              <h2 className="lcd-text text-[11px] leading-relaxed truncate px-2"
+              <div className="text-center flex-1 min-w-0 space-y-1">
+              <h2 className="lcd-text text-[11px] leading-relaxed truncate"
                 style={{ color: t.lcdText, textShadow: `0 0 6px rgba(${t.accentRgb},0.4)` }}>
                 {currentTrackName.replace(/ /g, '_').toUpperCase()}
               </h2>
