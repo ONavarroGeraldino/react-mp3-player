@@ -9,6 +9,8 @@ import CornerViz from './CornerViz';
 import SpectrumViz from './SpectrumViz';
 import StyleSwitcher from './StyleSwitcher';
 import ShapeSwitcher from './ShapeSwitcher';
+import GifToggle from './GifToggle';
+import GifFrenzy from './GifFrenzy';
 import useAudio from '../hook/useAudio';
 import { loadFromIndexedDB, saveToIndexedDB, deleteFromIndexedDB, clearIndexedDB } from '../utils/storage';
 import { extractCoverFromFile } from '../utils/coverExtractor';
@@ -114,6 +116,7 @@ const Player = () => {
   const [showTracklist, setShowTracklist] = useState(false);
   const [style, setStyle] = useState(0);
   const [shape, setShape] = useState(0);
+  const [petsOn, setPetsOn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sphereReady, setSphereReady] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(0);
@@ -311,6 +314,8 @@ const Player = () => {
 
       <StyleSwitcher currentStyle={style} onChange={setStyle} />
       <ShapeSwitcher currentShape={shape} onChange={setShape} />
+      <GifToggle active={petsOn} onToggle={() => setPetsOn(p => !p)} />
+      <GifFrenzy active={petsOn} />
 
       {/* Scanline overlay */}
       <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.03]"
