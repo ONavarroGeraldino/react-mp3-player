@@ -60,7 +60,7 @@ const TrackList = ({ tracks, currentTrackIndex, onTrackSelect, onRemoveTrack, on
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="SEARCH..."
-                className="bg-transparent border-none outline-none text-[10px] font-bold uppercase tracking-wider text-[#94a3b8] placeholder-[#3d3d52] w-full"
+                className="bg-transparent border-none outline-none text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#94a3b8] placeholder-[#3d3d52] w-full py-1"
               />
               {search && (
                 <button onClick={() => setSearch('')} className="text-[#64748b] hover:text-[#94a3b8]">
@@ -95,7 +95,7 @@ const TrackList = ({ tracks, currentTrackIndex, onTrackSelect, onRemoveTrack, on
                   onDrop={(e) => handleDrop(e, actualIndex)}
                   onDragEnd={handleDragEnd}
                   onClick={() => onTrackSelect(actualIndex)}
-                  className="flex items-center gap-3 px-3 py-2 cursor-pointer group transition-colors"
+                  className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2.5 sm:py-2 cursor-pointer group transition-colors"
                   style={{
                     backgroundColor: currentTrackIndex === actualIndex ? `${accentColor}11` : dragIndex === actualIndex ? `${accentColor}22` : undefined,
                     borderLeft: currentTrackIndex === actualIndex ? `3px solid ${accentColor}` : '3px solid transparent',

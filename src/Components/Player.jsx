@@ -309,7 +309,7 @@ const Player = () => {
 
   return (
     <main
-      className={`min-h-[100dvh] w-full flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-500`}
+      className="min-h-[100dvh] w-full flex items-start sm:items-center justify-center p-2 sm:p-4 relative overflow-hidden transition-colors duration-500"
       style={{ backgroundColor: t.bgColor }}
     >
       <ThreeBackground style={style} accentColor={t.sphereColor} shape={shape} size={t.sphereSize} onLoad={onSphereLoad.current} />
@@ -327,13 +327,13 @@ const Player = () => {
       />
 
       {toast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 btn-bevel bg-[#1a1a2e] px-6 py-3 border border-[#3d3d52] text-[10px] font-bold uppercase tracking-widest lcd-text animate-[fadeIn_0.2s_ease-out]"
+        <div className="fixed top-2 sm:top-4 left-1/2 -translate-x-1/2 z-50 btn-bevel bg-[#1a1a2e] px-3 sm:px-6 py-2 sm:py-3 border border-[#3d3d52] text-[8px] sm:text-[10px] font-bold uppercase tracking-widest lcd-text animate-[fadeIn_0.2s_ease-out] max-w-[90vw] truncate"
           style={{ color: t.accent, textShadow: `0 0 6px rgba(${t.accentRgb},0.4)` }}>
           {toast}
         </div>
       )}
 
-      <div className={`${t.caseClass} w-full max-w-[400px] relative z-10 transition-all duration-500 overflow-hidden`} style={{ opacity: 0.9 }}>
+      <div className={`${t.caseClass} w-full max-w-[400px] mx-auto relative z-10 transition-all duration-500 overflow-hidden`} style={{ opacity: 0.9 }}>
         {loading && (
           <div className="flex flex-col items-center justify-center gap-4 py-20">
             <div className="relative w-10 h-10">
@@ -377,7 +377,7 @@ const Player = () => {
         </div>
 
         {/* Main content */}
-        <div className="p-4 space-y-4">
+        <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
           {/* File upload */}
           <FileUploader onFilesUpload={handleNewFiles} isDragOver={isDragOver} accentColor={t.accent} onToast={showToast} />
 

@@ -1,11 +1,13 @@
 const SpectrumViz = ({ freqData, accentColor, accentRgb }) => {
   if (!freqData || freqData.length === 0) return null;
 
-  const bars = Array.from(freqData).slice(0, 32);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 480;
+  const barCount = isMobile ? 20 : 32;
+  const bars = Array.from(freqData).slice(0, barCount);
   const maxVal = Math.max(...bars, 1);
 
   return (
-    <div className="flex items-end justify-center gap-[1px] h-12 w-full px-1">
+    <div className="flex items-end justify-center gap-[1px] h-8 sm:h-12 w-full px-0 sm:px-1">
       {bars.map((val, i) => {
         const height = Math.max(2, (val / maxVal) * 100);
         return (

@@ -246,32 +246,74 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
   .retro-case,
   .chrome-case,
   .lava-case {
-    border-radius: 14px;
+    border-radius: 12px;
+    max-width: 100% !important;
+  }
+
+  .screen-bezel {
+    padding: 8px !important;
+    border-width: 2px;
   }
 
   .btn-bevel {
-    cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
     -webkit-user-select: none;
   }
 
   button {
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 36px;
+    min-height: 36px;
     -webkit-tap-highlight-color: transparent;
   }
 
   input[type="range"] {
-    min-height: 20px;
-  }
-
-  .screen-bezel {
-    padding: 10px !important;
+    min-height: 24px;
   }
 
   .track-item {
-    padding: 10px 8px;
+    padding: 10px 6px;
+  }
+
+  .lcd-text {
+    font-size: 9px !important;
+  }
+
+  .track-name-list {
+    font-size: 11px !important;
+  }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+  .player-case,
+  .glass-case,
+  .neon-case,
+  .retro-case,
+  .chrome-case,
+  .lava-case {
+    max-width: 90% !important;
+  }
+}
+
+/* Landscape phones */
+@media (max-height: 500px) and (orientation: landscape) {
+  .player-case,
+  .glass-case,
+  .neon-case,
+  .retro-case,
+  .chrome-case,
+  .lava-case {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+
+  .screen-bezel {
+    padding: 6px !important;
+  }
+
+  .tracklist-container {
+    max-height: 80px;
   }
 }
 

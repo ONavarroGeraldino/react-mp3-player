@@ -54,7 +54,7 @@ const InstallButton = () => {
   return (
     <button
       onClick={handleInstall}
-      className="fixed bottom-4 right-4 z-50 btn-bevel bg-[#2a2a3a] hover:bg-[#3d3d52] px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest text-[#ff2d95] hover:text-white transition-all animate-pulse"
+      className="fixed bottom-3 sm:bottom-4 right-3 sm:right-4 z-50 btn-bevel bg-[#2a2a3a] hover:bg-[#3d3d52] px-3 sm:px-4 py-2 sm:py-2.5 text-[8px] sm:text-[10px] font-bold uppercase tracking-widest text-[#ff2d95] hover:text-white transition-all animate-pulse"
       title="Instalar como app"
     >
       <span className="flex items-center gap-2">
