@@ -118,6 +118,7 @@ const Player = () => {
   const dragCounter = useRef(0);
   const toastTimer = useRef(null);
   const isLoaded = useRef(false);
+  const autoPlayRef = useRef(false);
 
   const t = themes[style];
 
@@ -135,7 +136,9 @@ const Player = () => {
 
   useEffect(() => {
     if (tracks.length > 0) {
-      loadTrack(tracks[currentTrackIndex].url);
+      const shouldAutoPlay = autoPlayRef.current;
+      if (shouldAutoPlay) autoPlayRef.current = false;
+      loadTrack(tracks[currentTrackIndex].url, shouldAutoPlay);
     }
   }, [currentTrackIndex, reloadTrigger]);
 
@@ -191,6 +194,7 @@ const Player = () => {
   };
 
   const handleTrackSelect = (index) => {
+    autoPlayRef.current = true;
     setCurrentTrackIndex(index);
   };
 
@@ -222,11 +226,13 @@ const Player = () => {
 
   const skipForward = () => {
     if (tracks.length === 0) return;
+    autoPlayRef.current = true;
     setCurrentTrackIndex((prev) => (prev + 1) % tracks.length);
   };
 
   const skipBack = () => {
     if (tracks.length === 0) return;
+    autoPlayRef.current = true;
     setCurrentTrackIndex((prev) => (prev - 1 + tracks.length) % tracks.length);
   };
 

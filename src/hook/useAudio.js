@@ -33,15 +33,40 @@ const useAudio = () => {
     animFrame.current = requestAnimationFrame(updateFreq);
   }, []);
 
-  const loadTrack = useCallback((url) => {
+  const loadTrack = useCallback((url, autoPlay = false) => {
     audio.current.pause();
     setIsPlaying(false);
     isPlayingRef.current = false;
+    if (animFrame.current) cancelAnimationFrame(animFrame.current);
     audio.current.src = url;
     audio.current.load();
     setCurrentTime(0);
     setDuration(0);
-  }, []);
+
+    if (autoPlay) {
+      const onReady = () => {
+        audio.current.removeEventListener('canplay', onReady);
+        initAudioContext();
+        if (audioCtx.current?.state === 'suspended') {
+          audioCtx.current.resume();
+        }
+        const playPromise = audio.current.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              setIsPlaying(true);
+              isPlayingRef.current = true;
+              updateFreq();
+            })
+            .catch(() => {
+              setIsPlaying(false);
+              isPlayingRef.current = false;
+            });
+        }
+      };
+      audio.current.addEventListener('canplay', onReady, { once: true });
+    }
+  }, [initAudioContext, updateFreq]);
 
   const togglePlayPause = useCallback(() => {
     const audioEl = audio.current;
