@@ -96,9 +96,11 @@ function cubePositions(count) {
 
 const ThreeBackground = ({ accentColor = '#ff2d95', size = 'large', shape = 0, onLoad }) => {
   const containerRef = useRef(null);
+  const onLoadRef = useRef(onLoad);
+  onLoadRef.current = onLoad;
 
   useEffect(() => {
-    if (size === 'hidden') { onLoad?.(); return; }
+    if (size === 'hidden') { onLoadRef.current?.(); return; }
 
     const container = containerRef.current;
     if (!container) return;
@@ -197,7 +199,7 @@ const ThreeBackground = ({ accentColor = '#ff2d95', size = 'large', shape = 0, o
       renderer.render(scene, camera);
     };
     animate();
-    onLoad?.();
+    onLoadRef.current?.();
 
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -214,7 +216,7 @@ const ThreeBackground = ({ accentColor = '#ff2d95', size = 'large', shape = 0, o
       material.dispose();
       renderer.dispose();
     };
-  }, [accentColor, size, shape, onLoad]);
+  }, [accentColor, size, shape]);
 
   return <div ref={containerRef} className="fixed inset-0 z-0 pointer-events-none transition-opacity duration-500" />;
 };

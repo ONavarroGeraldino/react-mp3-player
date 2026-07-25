@@ -120,6 +120,7 @@ const Player = () => {
   const [loading, setLoading] = useState(true);
   const [sphereReady, setSphereReady] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(0);
+  const onSphereLoad = useRef(() => setSphereReady(true));
   const dragCounter = useRef(0);
   const toastTimer = useRef(null);
   const isLoaded = useRef(false);
@@ -310,7 +311,7 @@ const Player = () => {
       className={`min-h-[100dvh] w-full flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-500`}
       style={{ backgroundColor: t.bgColor }}
     >
-      <ThreeBackground style={style} accentColor={t.sphereColor} shape={shape} size={t.sphereSize} onLoad={() => setSphereReady(true)} />
+      <ThreeBackground style={style} accentColor={t.sphereColor} shape={shape} size={t.sphereSize} onLoad={onSphereLoad.current} />
 
       <StyleSwitcher currentStyle={style} onChange={setStyle} />
       <ShapeSwitcher currentShape={shape} onChange={setShape} />
