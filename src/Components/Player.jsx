@@ -6,9 +6,11 @@ import TrackList from './TrackList';
 import Equalizer from './Equalizer';
 import ThreeBackground from './ThreeBackground';
 import CornerViz from './CornerViz';
+import SpectrumViz from './SpectrumViz';
 import StyleSwitcher from './StyleSwitcher';
 import useAudio from '../hook/useAudio';
 import { loadFromIndexedDB, saveToIndexedDB, deleteFromIndexedDB, clearIndexedDB } from '../utils/storage';
+import { extractCoverFromFile } from '../utils/coverExtractor';
 
 const themes = {
   0: {
@@ -111,6 +113,7 @@ const Player = () => {
   const [showTracklist, setShowTracklist] = useState(false);
   const [style, setStyle] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [sphereReady, setSphereReady] = useState(false);
   const dragCounter = useRef(0);
   const toastTimer = useRef(null);
   const isLoaded = useRef(false);
@@ -122,6 +125,7 @@ const Player = () => {
     currentTime,
     duration,
     volume,
+    freqData,
     togglePlayPause,
     loadTrack,
     seek,
@@ -207,6 +211,10 @@ const Player = () => {
     showToast('PLAYLIST CLEARED');
   };
 
+  const handleReorder = (reordered) => {
+    setTracks(reordered);
+  };
+
   const skipForward = () => {
     if (tracks.length === 0) return;
     setCurrentTrackIndex((prev) => (prev + 1) % tracks.length);
@@ -251,7 +259,9 @@ const Player = () => {
           const id = 'track_' + Date.now() + '_' + Math.random().toString(36).slice(2);
           const name = file.name.replace(/\.[^/.]+$/, '');
           await saveToIndexedDB(id, file, name);
-          newTracks.push({ name, url: URL.createObjectURL(file), local: true, localId: id });
+          let cover = null;
+          try { cover = await extractCoverFromFile(file); } catch {}
+          newTracks.push({ name, url: URL.createObjectURL(file), cover, local: true, localId: id });
         }
         if (newTracks.length > 0) {
           handleNewFiles(newTracks);
@@ -284,7 +294,7 @@ const Player = () => {
       className={`min-h-[100dvh] w-full flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-500`}
       style={{ backgroundColor: t.bgColor }}
     >
-      <ThreeBackground style={style} accentColor={t.sphereColor} size={t.sphereSize} />
+      <ThreeBackground style={style} accentColor={t.sphereColor} size={t.sphereSize} onLoad={() => setSphereReady(true)} />
 
       <StyleSwitcher currentStyle={style} onChange={setStyle} />
 
@@ -304,12 +314,19 @@ const Player = () => {
 
       <div className={`${t.caseClass} w-full max-w-[400px] relative z-10 transition-all duration-500`}>
         {loading && (
-          <div className="flex flex-col items-center justify-center gap-3 py-20">
-            <svg className="animate-spin" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={t.accent} strokeWidth="2">
-              <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
-              <path d="M12 2a10 10 0 0 1 10 10" strokeOpacity="1" />
-            </svg>
-            <span className="lcd-text text-[10px]" style={{ color: t.lcdText }}>LOADING...</span>
+          <div className="flex flex-col items-center justify-center gap-4 py-20">
+            <div className="relative w-10 h-10">
+              <svg className="animate-spin absolute inset-0" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={t.accent} strokeWidth="1.5">
+                <circle cx="12" cy="12" r="10" strokeOpacity="0.15" />
+                <path d="M12 2a10 10 0 0 1 10 10" strokeOpacity="1" />
+              </svg>
+              <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold lcd-text" style={{ color: t.lcdText }}>
+                {sphereReady ? 'OK' : '3D'}
+              </span>
+            </div>
+            <span className="lcd-text text-[10px]" style={{ color: t.lcdText }}>
+              {sphereReady ? 'INITIALIZING...' : 'LOADING SPHERE...'}
+            </span>
           </div>
         )}
         {!loading && (
@@ -346,11 +363,24 @@ const Player = () => {
           {/* LCD Display area */}
           <div className="screen-bezel p-4 space-y-3 relative" style={{ background: t.lcdBg, borderColor: t.lcdBorder }}>
             <CornerViz isPlaying={isPlaying} accentColor={t.accent} />
-            {/* Spectrum analyzer / Equalizer */}
-            <Equalizer isPlaying={isPlaying} accentColor={t.accent} />
+            <SpectrumViz freqData={freqData} accentColor={t.accent} accentRgb={t.accentRgb} />
 
-            {/* Track name LCD */}
-            <div className="text-center space-y-1">
+            {/* Cover art + track info */}
+            <div className="flex items-center gap-3">
+              {tracks[currentTrackIndex]?.cover ? (
+                <img
+                  src={tracks[currentTrackIndex].cover}
+                  alt="cover"
+                  className="w-10 h-10 object-cover border border-[#1a1a28]"
+                />
+              ) : (
+                <div className="w-10 h-10 flex items-center justify-center bg-[#0d0d18] border border-[#1a1a28] text-[#3d3d52]">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" />
+                  </svg>
+                </div>
+              )}
+              <div className="text-center flex-1 space-y-1">
               <h2 className="lcd-text text-[11px] leading-relaxed truncate px-2"
                 style={{ color: t.lcdText, textShadow: `0 0 6px rgba(${t.accentRgb},0.4)` }}>
                 {currentTrackName.replace(/ /g, '_').toUpperCase()}
@@ -367,6 +397,7 @@ const Player = () => {
                   {tracks.length === 0 ? 'STAND_BY' : isPlaying ? 'PLAYING >>' : 'PAUSED ||'}
                 </span>
               </div>
+            </div>
             </div>
 
             {/* Progress LCD */}
@@ -403,6 +434,7 @@ const Player = () => {
             currentTrackIndex={currentTrackIndex}
             onTrackSelect={handleTrackSelect}
             onRemoveTrack={handleRemoveTrack}
+            onReorder={handleReorder}
             visible={showTracklist || tracks.length > 0}
             onToggle={() => setShowTracklist(prev => !prev)}
             accentColor={t.accent}

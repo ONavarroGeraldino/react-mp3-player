@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-const ThreeBackground = ({ style = 0, accentColor = '#ff2d95', size = 'large' }) => {
+const ThreeBackground = ({ style = 0, accentColor = '#ff2d95', size = 'large', onLoad }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    if (size === 'hidden') return;
+    if (size === 'hidden') {
+      onLoad?.();
+      return;
+    }
 
     const container = containerRef.current;
     if (!container) return;
@@ -74,6 +77,7 @@ const ThreeBackground = ({ style = 0, accentColor = '#ff2d95', size = 'large' })
       renderer.render(scene, camera);
     };
     animate();
+    onLoad?.();
 
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;

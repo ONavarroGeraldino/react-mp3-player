@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { saveToIndexedDB } from '../utils/storage';
+import { extractCoverFromFile } from '../utils/coverExtractor';
 
 const FileUploader = ({ onFilesUpload, isDragOver, accentColor, onToast }) => {
   const [uploading, setUploading] = useState(false);
@@ -8,9 +9,11 @@ const FileUploader = ({ onFilesUpload, isDragOver, accentColor, onToast }) => {
     const id = 'track_' + Date.now() + '_' + Math.random().toString(36).slice(2);
     const name = file.name.replace(/\.[^/.]+$/, '');
     await saveToIndexedDB(id, file, name);
+    const cover = await extractCoverFromFile(file);
     return {
       name,
       url: URL.createObjectURL(file),
+      cover,
       local: true,
       localId: id,
     };

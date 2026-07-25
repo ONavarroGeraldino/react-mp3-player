@@ -230,3 +230,49 @@ input[type="range"].winamp-progress::-webkit-slider-thumb:hover {
   background: rgba(255,45,149,0.3);
   color: #fff;
 }
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+  .player-case,
+  .glass-case,
+  .neon-case,
+  .retro-case,
+  .chrome-case,
+  .lava-case {
+    border-radius: 14px;
+  }
+
+  .btn-bevel {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  button {
+    min-width: 32px;
+    min-height: 32px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input[type="range"] {
+    min-height: 20px;
+  }
+
+  .screen-bezel {
+    padding: 10px !important;
+  }
+
+  .track-item {
+    padding: 10px 8px;
+  }
+}
+
+/* Prevent text selection on interactive elements */
+.btn-bevel,
+button,
+label {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
